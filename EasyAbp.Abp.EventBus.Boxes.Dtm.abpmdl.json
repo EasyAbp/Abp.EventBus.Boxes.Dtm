@@ -1,0 +1,79 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.Domain.Shared": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.Domain.Shared/EasyAbp.Abp.EventBus.Boxes.Dtm.Domain.Shared.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.Domain": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.Domain/EasyAbp.Abp.EventBus.Boxes.Dtm.Domain.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.Application.Contracts": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.Application.Contracts/EasyAbp.Abp.EventBus.Boxes.Dtm.Application.Contracts.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.Application": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.Application/EasyAbp.Abp.EventBus.Boxes.Dtm.Application.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore/EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB/EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Client": {
+      "path": "src/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Client/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Client.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.TestBase": {
+      "path": "test/EasyAbp.Abp.EventBus.Boxes.Dtm.TestBase/EasyAbp.Abp.EventBus.Boxes.Dtm.TestBase.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore.Tests": {
+      "path": "test/EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore.Tests/EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB.Tests": {
+      "path": "test/EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB.Tests/EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.Domain.Tests": {
+      "path": "test/EasyAbp.Abp.EventBus.Boxes.Dtm.Domain.Tests/EasyAbp.Abp.EventBus.Boxes.Dtm.Domain.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.Application.Tests": {
+      "path": "test/EasyAbp.Abp.EventBus.Boxes.Dtm.Application.Tests/EasyAbp.Abp.EventBus.Boxes.Dtm.Application.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Host": {
+      "path": "host/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Host/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Host.abppkg.json",
+      "folder": "host"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Client.ConsoleTestApp/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Client.ConsoleTestApp.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.IdentityServer": {
+      "path": "host/EasyAbp.Abp.EventBus.Boxes.Dtm.IdentityServer/EasyAbp.Abp.EventBus.Boxes.Dtm.IdentityServer.abppkg.json",
+      "folder": "host"
+    },
+    "EasyAbp.Abp.EventBus.Boxes.Dtm.Host.Shared": {
+      "path": "host/EasyAbp.Abp.EventBus.Boxes.Dtm.Host.Shared/EasyAbp.Abp.EventBus.Boxes.Dtm.Host.Shared.abppkg.json",
+      "folder": "host"
+    }
+  }
+}

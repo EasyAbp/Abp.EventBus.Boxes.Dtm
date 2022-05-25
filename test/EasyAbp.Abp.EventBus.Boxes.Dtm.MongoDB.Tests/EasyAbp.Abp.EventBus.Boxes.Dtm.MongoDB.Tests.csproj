@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>EasyAbp.Abp.EventBus.Boxes.Dtm</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="Mongo2Go" Version="3.1.3" />
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB\EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB.csproj" />
+    <ProjectReference Include="..\EasyAbp.Abp.EventBus.Boxes.Dtm.TestBase\EasyAbp.Abp.EventBus.Boxes.Dtm.TestBase.csproj" />
+  </ItemGroup>
+
+</Project>
