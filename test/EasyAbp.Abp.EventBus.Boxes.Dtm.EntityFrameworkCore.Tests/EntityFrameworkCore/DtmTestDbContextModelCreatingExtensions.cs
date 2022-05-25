@@ -3,9 +3,9 @@ using Volo.Abp;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore;
 
-public static class DtmDbContextModelCreatingExtensions
+public static class DtmTestDbContextModelCreatingExtensions
 {
-    public static void ConfigureDtm(
+    public static void ConfigureDtmTest(
         this ModelBuilder builder)
     {
         Check.NotNull(builder, nameof(builder));

@@ -33,8 +33,8 @@ public class AbpEventBusBoxesDtmEntityFrameworkCoreTestModule : AbpModule
         var connection = new SqliteConnection("Data Source=:memory:");
         connection.Open();
 
-        new DtmDbContext(
-            new DbContextOptionsBuilder<DtmDbContext>().UseSqlite(connection).Options
+        new DtmTestDbContext(
+            new DbContextOptionsBuilder<DtmTestDbContext>().UseSqlite(connection).Options
         ).GetService<IRelationalDatabaseCreator>().CreateTables();
 
         return connection;

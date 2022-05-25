@@ -5,13 +5,13 @@ using Volo.Abp.EntityFrameworkCore;
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore;
 
 [ConnectionStringName(DtmDbProperties.ConnectionStringName)]
-public class DtmDbContext : AbpDbContext<DtmDbContext>, IDtmDbContext
+public class DtmTestDbContext : AbpDbContext<DtmTestDbContext>, IDtmDbContext
 {
     /* Add DbSet for each Aggregate Root here. Example:
      * public DbSet<Question> Questions { get; set; }
      */
 
-    public DtmDbContext(DbContextOptions<DtmDbContext> options)
+    public DtmTestDbContext(DbContextOptions<DtmTestDbContext> options)
         : base(options)
     {
 
@@ -21,6 +21,6 @@ public class DtmDbContext : AbpDbContext<DtmDbContext>, IDtmDbContext
     {
         base.OnModelCreating(builder);
 
-        builder.ConfigureDtm();
+        builder.ConfigureDtmTest();
     }
 }

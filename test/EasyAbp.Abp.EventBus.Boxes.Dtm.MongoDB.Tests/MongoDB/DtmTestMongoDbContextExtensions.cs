@@ -3,9 +3,9 @@ using Volo.Abp.MongoDB;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB;
 
-public static class DtmMongoDbContextExtensions
+public static class DtmTestMongoDbContextExtensions
 {
-    public static void ConfigureDtm(
+    public static void ConfigureDtmTest(
         this IMongoModelBuilder builder)
     {
         Check.NotNull(builder, nameof(builder));
