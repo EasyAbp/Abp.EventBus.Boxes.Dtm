@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -8,7 +9,8 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
 public interface IDtmMessageManager
 {
-    Task AddEventAsync(object dbContext, [CanBeNull] DbTransaction dbTransaction, OutgoingEventInfo eventInfo);
+    Task AddEventAsync([NotNull] Type dbContextType, [NotNull] string connectionString, [CanBeNull] object transObj,
+        OutgoingEventInfo eventInfo);
 
     Task PrepareAsync(CancellationToken cancellationToken = default);
 

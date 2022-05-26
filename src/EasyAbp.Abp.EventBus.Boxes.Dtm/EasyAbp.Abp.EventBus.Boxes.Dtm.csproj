@@ -9,16 +9,19 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.20.0" />
+    <PackageReference Include="Dtmgrpc" Version="$(DtmgrpcVersion)" />
+    <PackageReference Include="Volo.Abp.EventBus" Version="$(AbpVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="Grpc.Tools" Version="2.45.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Dtmgrpc" Version="$(DtmgrpcVersion)" />
-    <PackageReference Include="Volo.Abp.EventBus" Version="$(AbpVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include=".\EasyAbp\Abp\EventBus\Boxes\Dtm\Protos\dtm.proto" GrpcServices="Server" />
+    <Protobuf Include=".\EasyAbp\Abp\EventBus\Boxes\Dtm\Protos\dtm_boxes.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

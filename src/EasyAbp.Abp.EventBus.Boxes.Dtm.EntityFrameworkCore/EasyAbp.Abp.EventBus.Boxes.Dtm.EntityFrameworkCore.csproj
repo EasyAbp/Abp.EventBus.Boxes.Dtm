@@ -13,7 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EasyAbp\Abp\EventBus\Boxes\Dtm" />
+    <PackageReference Include="Grpc.Tools" Version="2.45.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include=".\EasyAbp\Abp\EventBus\Boxes\Dtm\Protos\dtm_boxes_efcore.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

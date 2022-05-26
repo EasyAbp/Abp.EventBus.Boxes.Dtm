@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using Microsoft.Extensions.Options;
+using Volo.Abp.Data;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MongoDB;
 using Volo.Abp.MongoDB.DistributedEvents;
@@ -30,24 +31,26 @@ public class DtmDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TD
     public virtual async Task EnqueueAsync(OutgoingEventInfo outgoingEvent)
     {
         var dbContext = await DbContextProvider.GetDbContextAsync();
-        // Todo: how to get dbTransaction?
-        DbTransaction dbTransaction = null;
-        
-        await DtmMessageManager.AddEventAsync(dbContext, dbTransaction, outgoingEvent);
+
+        await DtmMessageManager.AddEventAsync(
+            typeof(TDbContext),
+            ConnectionStringNameAttribute.GetConnStringName<TDbContext>(),
+            dbContext.SessionHandle,
+            outgoingEvent);
     }
 
     public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount, CancellationToken cancellationToken = new())
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public virtual Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public async Task DeleteManyAsync(IEnumerable<Guid> ids)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 }

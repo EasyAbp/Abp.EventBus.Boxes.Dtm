@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
-using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MultiTenancy;
@@ -20,24 +18,24 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 public class DtmMessageManager : IDtmMessageManager, IScopedDependency
 {
     /// <summary>
-    /// DTM message for non-transactional DbContexts.
+    /// DTM message for non-transactional distributed events.
     /// </summary>
     protected DtmMessageInfoModel DefaultDtmMessage { get; set; }
     
     /// <summary>
-    /// Distributed events of non-transactional DbContext.
+    /// Non-transactional distributed events.
     /// </summary>
-    protected List<OutgoingEventInfo> DefaultEvents { get; set; }
+    protected DtmMessageEventList DefaultEvents { get; set; }
     
     /// <summary>
-    /// DTM message for each transactional DbContext.
+    /// DTM message for each transaction.
     /// </summary>
-    protected ConcurrentDictionary<DbTransaction, DtmMessageInfoModel> TransMessages { get; set; } = new();
+    protected ConcurrentDictionary<object, DtmMessageInfoModel> TransMessages { get; set; } = new();
     
     /// <summary>
-    /// Distributed events of each transactional DbContext.
+    /// Distributed events of each transaction.
     /// </summary>
-    protected ConcurrentDictionary<DbTransaction, List<OutgoingEventInfo>> TransEvents { get; set; } = new();
+    protected ConcurrentDictionary<object, DtmMessageEventList> TransEvents { get; set; } = new();
 
     protected ICurrentTenant CurrentTenant { get; }
     
@@ -70,25 +68,26 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         ConnectionStringHasher = connectionStringHasher;
         DtmOutboxOptions = dtmOutboxOptions.Value;
     }
-    
-    public virtual async Task AddEventAsync(object dbContext, DbTransaction dbTransaction, OutgoingEventInfo eventInfo)
+
+    public virtual async Task AddEventAsync(Type dbContextType, string connectionString, object transObj,
+        OutgoingEventInfo eventInfo)
     {
-        if (dbTransaction is null)
+        var hashedConnectionString = await ConnectionStringHasher.HashAsync(connectionString);
+
+        if (transObj is null)
         {
+            DefaultEvents ??=
+                new DtmMessageEventList(new DbConnectionLookupInfoModel(dbContextType, CurrentTenant.Id,
+                    hashedConnectionString));
+
             DefaultEvents.Add(eventInfo);
         }
         else
         {
-            var events = TransEvents.GetOrAdd(dbTransaction, () => new List<OutgoingEventInfo>());
+            var events = TransEvents.GetOrAdd(transObj,
+                () => new DtmMessageEventList(new DbConnectionLookupInfoModel(dbContextType, CurrentTenant.Id,
+                    hashedConnectionString)));
 
-            eventInfo.SetProperty(OutgoingEventInfoProperties.ConnectionStringName,
-                ConnectionStringNameAttribute.GetConnStringName(dbContext.GetType()));
-
-            eventInfo.SetProperty(OutgoingEventInfoProperties.TenantId, CurrentTenant.Id);
-
-            eventInfo.SetProperty(OutgoingEventInfoProperties.HashedConnectionString,
-                await ConnectionStringHasher.HashAsync(dbTransaction.Connection.ConnectionString));
-            
             events.Add(eventInfo);
         }
     }
@@ -98,9 +97,9 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         var defaultMsg = GetOrCreateDtmMessage(null);
         AddEventsPublishingAction(defaultMsg, DefaultEvents);
 
-        foreach (var (dbTransaction, eventInfos) in TransEvents)
+        foreach (var (transObj, eventInfos) in TransEvents)
         {
-            var msg = GetOrCreateDtmMessage(dbTransaction);
+            var msg = GetOrCreateDtmMessage(transObj);
             AddEventsPublishingAction(msg, eventInfos);
         }
         
@@ -109,7 +108,7 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         await DefaultDtmMessage.Message.Prepare(GenerateQueryPreparedAddress(DefaultEvents),
             cancellationToken);
         
-        foreach (var (dbTransaction, dtmMessage) in TransMessages)
+        foreach (var (transObj, dtmMessage) in TransMessages)
         {
             // todo: insert barrier for message.
             // var barrier = BranchBarrierFactory.CreateBranchBarrier(Constant.TYPE_MSG, dtmMessage.Gid,
@@ -120,7 +119,7 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
             //     throw new DtmException($"invalid trans info: {barrier}");
             // }
 
-            await dtmMessage.Message.Prepare(GenerateQueryPreparedAddress(TransEvents[dbTransaction]),
+            await dtmMessage.Message.Prepare(GenerateQueryPreparedAddress(TransEvents[transObj]),
                 cancellationToken);
         }
     }
@@ -135,9 +134,9 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         await DefaultDtmMessage.Message.Submit(cancellationToken);
     }
 
-    protected virtual DtmMessageInfoModel GetOrCreateDtmMessage([CanBeNull] DbTransaction dbTransaction)
+    protected virtual DtmMessageInfoModel GetOrCreateDtmMessage([CanBeNull] object transObj)
     {
-        if (dbTransaction is null)
+        if (transObj is null)
         {
             if (DefaultDtmMessage == null)
             {
@@ -148,16 +147,16 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
             return DefaultDtmMessage;
         }
         
-        TransMessages.GetOrAdd(dbTransaction, _ =>
+        TransMessages.GetOrAdd(transObj, _ =>
         {
             var gid = GidProvider.Create();
             return new DtmMessageInfoModel(gid, DtmTransFactory.NewMsgGrpc(gid));
         });
 
-        return TransMessages[dbTransaction];
+        return TransMessages[transObj];
     }
     
-    protected virtual void AddEventsPublishingAction(DtmMessageInfoModel model, List<OutgoingEventInfo> eventInfos)
+    protected virtual void AddEventsPublishingAction(DtmMessageInfoModel model, DtmMessageEventList eventInfos)
     {
         model.Message.Add(DtmOutboxOptions.GetPublishEventsAddress(), new DtmMsgPublishEventsRequest
         {
@@ -166,14 +165,14 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         });
     }
     
-    protected virtual string GenerateQueryPreparedAddress(IEnumerable<OutgoingEventInfo> events)
+    protected virtual string GenerateQueryPreparedAddress(DtmMessageEventList eventList)
     {
         var baseUrl = DtmOutboxOptions.GetQueryPreparedAddress();
 
-        var firstEvent = events.First();
-        
+        var firstEvent = eventList.First();
+
         var extraParams =
-            $"Info.ConnectionStringName={firstEvent.GetProperty<string>(OutgoingEventInfoProperties.ConnectionStringName)}&Info.TenantId={firstEvent.GetProperty<Guid?>(OutgoingEventInfoProperties.ConnectionStringName)}&Info.HashedConnectionString={firstEvent.GetProperty<string>(OutgoingEventInfoProperties.HashedConnectionString)}";
+            $"Info.DbContext={eventList.DbConnectionLookupInfo.DbContextType.FullName}&Info.TenantId={eventList.DbConnectionLookupInfo.TenantId}&Info.HashedConnectionString={eventList.DbConnectionLookupInfo.HashedConnectionString}";
         
         return baseUrl.Contains('?') ? $"{baseUrl.EnsureEndsWith('&')}{extraParams}" : $"{baseUrl}?{extraParams}";
     }
