@@ -103,11 +103,11 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
             AddEventsPublishingAction(msg, eventInfos);
         }
         
-        // todo: insert barrier for default message.
-        
-        await DefaultDtmMessage.Message.Prepare(GenerateQueryPreparedAddress(DefaultEvents),
-            cancellationToken);
-        
+        // WARNING:
+        // the defaultMsg (with non-transactional events) will not invoke DTM's Prepare and not create a barrier.
+        // That means when the DTM crashes, non-transactional events will never publish.
+        // To avoid this problem, please keep using transactions if you need write-operations.
+
         foreach (var (transObj, dtmMessage) in TransMessages)
         {
             // todo: insert barrier for message.
