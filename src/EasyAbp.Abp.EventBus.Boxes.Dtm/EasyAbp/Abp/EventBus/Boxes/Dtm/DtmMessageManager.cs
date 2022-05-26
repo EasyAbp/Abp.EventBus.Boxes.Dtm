@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtmgrpc;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
@@ -21,7 +22,7 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
     /// <summary>
     /// DTM message for non-transactional DbContexts.
     /// </summary>
-    protected MsgGrpc DefaultDtmMessage { get; set; }
+    protected DtmMessageInfoModel DefaultDtmMessage { get; set; }
     
     /// <summary>
     /// Distributed events of non-transactional DbContext.
@@ -31,7 +32,7 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
     /// <summary>
     /// DTM message for each transactional DbContext.
     /// </summary>
-    protected ConcurrentDictionary<DbTransaction, MsgGrpc> TransMessages { get; set; } = new();
+    protected ConcurrentDictionary<DbTransaction, DtmMessageInfoModel> TransMessages { get; set; } = new();
     
     /// <summary>
     /// Distributed events of each transactional DbContext.
@@ -44,6 +45,8 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
     
     protected IDtmTransFactory DtmTransFactory { get; }
     
+    protected IBranchBarrierFactory BranchBarrierFactory { get; }
+
     protected IEventInfosSerializer EventInfosSerializer { get; }
     
     protected IConnectionStringHasher ConnectionStringHasher { get; }
@@ -54,6 +57,7 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         ICurrentTenant currentTenant,
         IDtmMsgGidProvider gidProvider,
         IDtmTransFactory dtmTransFactory,
+        IBranchBarrierFactory branchBarrierFactory,
         IEventInfosSerializer eventInfosSerializer,
         IConnectionStringHasher connectionStringHasher,
         IOptions<DtmOutboxOptions> dtmOutboxOptions)
@@ -61,6 +65,7 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         CurrentTenant = currentTenant;
         GidProvider = gidProvider;
         DtmTransFactory = dtmTransFactory;
+        BranchBarrierFactory = branchBarrierFactory;
         EventInfosSerializer = eventInfosSerializer;
         ConnectionStringHasher = connectionStringHasher;
         DtmOutboxOptions = dtmOutboxOptions.Value;
@@ -99,11 +104,24 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
             AddEventsPublishingAction(msg, eventInfos);
         }
         
-        // Don't need to prepare for the default (non-transactional) msg.
+        // todo: insert barrier for default message.
+        
+        await DefaultDtmMessage.Message.Prepare(GenerateQueryPreparedAddress(DefaultEvents),
+            cancellationToken);
         
         foreach (var (dbTransaction, dtmMessage) in TransMessages)
         {
-            await dtmMessage.Prepare(GenerateQueryPreparedAddress(TransEvents[dbTransaction]), cancellationToken);
+            // todo: insert barrier for message.
+            // var barrier = BranchBarrierFactory.CreateBranchBarrier(Constant.TYPE_MSG, dtmMessage.Gid,
+            //     Constant.Barrier.MSG_BRANCHID, Constant.TYPE_MSG);
+            //
+            // if (barrier.IsInValid())
+            // {
+            //     throw new DtmException($"invalid trans info: {barrier}");
+            // }
+
+            await dtmMessage.Message.Prepare(GenerateQueryPreparedAddress(TransEvents[dbTransaction]),
+                cancellationToken);
         }
     }
 
@@ -111,29 +129,37 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
     {
         foreach (var (_, dtmMessage) in TransMessages)
         {
-            await dtmMessage.Submit(cancellationToken);
+            await dtmMessage.Message.Submit(cancellationToken);
         }
 
-        await DefaultDtmMessage.Submit(cancellationToken);
+        await DefaultDtmMessage.Message.Submit(cancellationToken);
     }
 
-    protected virtual MsgGrpc GetOrCreateDtmMessage([CanBeNull] DbTransaction dbTransaction)
+    protected virtual DtmMessageInfoModel GetOrCreateDtmMessage([CanBeNull] DbTransaction dbTransaction)
     {
         if (dbTransaction is null)
         {
-            DefaultDtmMessage ??= DtmTransFactory.NewMsgGrpc(GidProvider.Create());
-            
+            if (DefaultDtmMessage == null)
+            {
+                var gid = GidProvider.Create();
+                DefaultDtmMessage = new DtmMessageInfoModel(gid, DtmTransFactory.NewMsgGrpc(gid));
+            }
+
             return DefaultDtmMessage;
         }
         
-        TransMessages.GetOrAdd(dbTransaction, _ => DtmTransFactory.NewMsgGrpc(GidProvider.Create()));
+        TransMessages.GetOrAdd(dbTransaction, _ =>
+        {
+            var gid = GidProvider.Create();
+            return new DtmMessageInfoModel(gid, DtmTransFactory.NewMsgGrpc(gid));
+        });
 
         return TransMessages[dbTransaction];
     }
     
-    protected virtual void AddEventsPublishingAction(MsgGrpc msg, List<OutgoingEventInfo> eventInfos)
+    protected virtual void AddEventsPublishingAction(DtmMessageInfoModel model, List<OutgoingEventInfo> eventInfos)
     {
-        msg.Add(DtmOutboxOptions.GetPublishEventsAddress(), new DtmMsgPublishEventsRequest
+        model.Message.Add(DtmOutboxOptions.GetPublishEventsAddress(), new DtmMsgPublishEventsRequest
         {
             ActionApiToken = DtmOutboxOptions.ActionApiToken,
             OutgoingEventInfoListToByteString = EventInfosSerializer.Serialize(eventInfos)
