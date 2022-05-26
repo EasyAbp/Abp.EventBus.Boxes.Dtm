@@ -140,21 +140,15 @@ public class DtmMessageManager : IDtmMessageManager, IScopedDependency
         });
     }
     
-    protected virtual string GenerateQueryPreparedAddress(List<OutgoingEventInfo> events)
+    protected virtual string GenerateQueryPreparedAddress(IEnumerable<OutgoingEventInfo> events)
     {
         var baseUrl = DtmOutboxOptions.GetQueryPreparedAddress();
 
         var firstEvent = events.First();
-
-        var connectionStringLookupInfo = new ConnectionStringLookupInfo
-        {
-            ConnectionStringName = firstEvent.GetProperty<string>(OutgoingEventInfoProperties.ConnectionStringName),
-            TenantId = firstEvent.GetProperty<Guid?>(OutgoingEventInfoProperties.ConnectionStringName).ToString(),
-            HashedConnectionString = firstEvent.GetProperty<string>(OutgoingEventInfoProperties.HashedConnectionString)
-        };
-
-        // Todo: how to query with add extra properties?
-
-        return baseUrl;
+        
+        var extraParams =
+            $"Info.ConnectionStringName={firstEvent.GetProperty<string>(OutgoingEventInfoProperties.ConnectionStringName)}&Info.TenantId={firstEvent.GetProperty<Guid?>(OutgoingEventInfoProperties.ConnectionStringName)}&Info.HashedConnectionString={firstEvent.GetProperty<string>(OutgoingEventInfoProperties.HashedConnectionString)}";
+        
+        return baseUrl.Contains('?') ? $"{baseUrl.EnsureEndsWith('&')}{extraParams}" : $"{baseUrl}?{extraParams}";
     }
 }
