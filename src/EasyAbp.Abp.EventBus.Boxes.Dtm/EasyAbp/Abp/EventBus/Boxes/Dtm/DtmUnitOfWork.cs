@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using Volo.Abp.DependencyInjection;
 using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
-[ExposeServices(typeof(IUnitOfWork), typeof(UnitOfWork), IncludeSelf = true)]
 public class DtmUnitOfWork : UnitOfWork
 {
     protected IDtmMessageManager DtmMessageManager { get; }

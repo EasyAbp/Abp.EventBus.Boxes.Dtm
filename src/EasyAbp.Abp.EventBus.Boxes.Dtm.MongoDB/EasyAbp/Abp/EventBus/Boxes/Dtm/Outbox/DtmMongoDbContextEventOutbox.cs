@@ -12,13 +12,13 @@ using Volo.Abp.MongoDB.DistributedEvents;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
-public class DtmDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TDbContext> where TDbContext : IHasEventOutbox
+public class DtmMongoDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TDbContext> where TDbContext : IHasEventOutbox
 {
     protected IMongoDbContextProvider<TDbContext> DbContextProvider { get; }
     protected DtmOutboxOptions DtmOutboxOptions { get; }
     protected IDtmMessageManager DtmMessageManager { get; }
 
-    public DtmDbContextEventOutbox(
+    public DtmMongoDbContextEventOutbox(
         IMongoDbContextProvider<TDbContext> dbContextProvider,
         IOptions<DtmOutboxOptions> dtmOutboxOptions,
         IDtmMessageManager dtmMessageManager)

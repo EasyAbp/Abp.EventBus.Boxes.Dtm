@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 package dtm_boxes_mongodb;
-import "google/protobuf/empty.proto";
 
 option csharp_namespace = "EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB";
 option go_package = "./dtm_boxes_mongodb";

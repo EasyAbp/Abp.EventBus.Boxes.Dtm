@@ -8,7 +8,4 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 )]
 public class AbpEventBusBoxesDtmModule : AbpModule
 {
-    public override void ConfigureServices(ServiceConfigurationContext context)
-    {
-    }
 }

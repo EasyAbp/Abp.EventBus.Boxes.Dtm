@@ -15,6 +15,7 @@ using Volo.Abp.MultiTenancy;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
+// Todo: redesign to use ITransientDependency
 public class DtmMessageManager : IDtmMessageManager, IScopedDependency
 {
     /// <summary>

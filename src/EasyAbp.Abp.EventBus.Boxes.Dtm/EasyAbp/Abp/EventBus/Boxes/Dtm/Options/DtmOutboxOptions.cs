@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 
@@ -9,31 +8,41 @@ public class DtmOutboxOptions
     /// Use this token to invoke action APIs.
     /// </summary>
     /// <returns></returns>
-    [NotNull]
     public string ActionApiToken { get; set; }
     
-    [NotNull]
-    public string GrpcHost { get; set; }
+    public string AppGrpcUrl { get; set; }
 
-    [NotNull]
+    /// <summary>
+    /// dtm server grpc address, work for Dtmgrpc
+    /// </summary>
+    public string DtmGrpcUrl { get; set; }
+
+    /// <summary>
+    /// barrier table name, default dtm_barrier.barrier
+    /// </summary>
+    public string BarrierTableName { get; set; } = "dtm_barrier.barrier";
+
+    /// <summary>
+    /// dtm server request timeout in milliseconds, default 10,000 milliseconds(10s)
+    /// </summary>
+    public int DtmTimeout { get; set; } = 10 * 1000;
+
+    /// <summary>
+    /// branch request timeout in milliseconds, default 10,000 milliseconds(10s)
+    /// </summary>
+    public int BranchTimeout { get; set; } = 10 * 1000;
+    
     public string PublishEventsPath { get; set; } = "/DtmApi/PublishEvents";
     
-    [NotNull]
     public string QueryPreparedPath { get; set; } = "/DtmApi/QueryPrepared";
-
-    public DtmOutboxOptions([NotNull] string actionApiToken, [NotNull] string grpcHost)
-    {
-        ActionApiToken = actionApiToken;
-        GrpcHost = grpcHost;
-    }
 
     public string GetPublishEventsAddress()
     {
-        return $"{GrpcHost.RemovePostFix("/")}{PublishEventsPath.EnsureStartsWith('/')}";
+        return $"{AppGrpcUrl.RemovePostFix("/")}{PublishEventsPath.EnsureStartsWith('/')}";
     }
 
     public string GetQueryPreparedAddress()
     {
-        return $"{GrpcHost.RemovePostFix("/")}{QueryPreparedPath.EnsureStartsWith('/')}";
+        return $"{AppGrpcUrl.RemovePostFix("/")}{QueryPreparedPath.EnsureStartsWith('/')}";
     }
 }

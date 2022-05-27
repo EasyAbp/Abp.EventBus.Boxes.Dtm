@@ -10,7 +10,7 @@ using Volo.Abp.EventBus.Distributed;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
-public class DtmDbContextEventOutbox<TDbContext> : IDbContextEventOutbox<TDbContext> where TDbContext : IHasEventOutbox
+public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbContext> where TDbContext : IHasEventOutbox
 {
     protected IDbContextProvider<TDbContext> DbContextProvider { get; }
     protected IDtmMessageManager DtmMessageManager { get; }
