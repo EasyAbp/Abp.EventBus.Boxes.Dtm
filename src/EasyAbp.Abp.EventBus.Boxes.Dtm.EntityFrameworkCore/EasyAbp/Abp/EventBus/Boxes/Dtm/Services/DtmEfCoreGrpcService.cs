@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DtmCommon;
-using Dtmgrpc;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.EfCore;
 using Grpc.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.Data;
@@ -21,29 +21,29 @@ public class DtmEfCoreGrpcService : EfCore.DtmEfCoreGrpcService.DtmEfCoreGrpcSer
     
     protected IServiceProvider ServiceProvider { get; }
 
-    protected IBranchBarrierFactory BranchBarrierFactory { get; }
-    
     protected IActionApiTokenChecker ActionApiTokenChecker { get; }
 
     protected IConnectionStringHasher ConnectionStringHasher { get; }
     
+    protected IAbpEfCoreDtmMsgBarrierManager AbpEfCoreDtmMsgBarrierManager { get; }
+
     protected IConnectionStringResolver ConnectionStringResolver { get; }
 
     public DtmEfCoreGrpcService(
         ILogger<DtmEfCoreGrpcService> logger,
         ICurrentTenant currentTenant,
         IServiceProvider serviceProvider,
-        IBranchBarrierFactory branchBarrierFactory,
         IActionApiTokenChecker actionApiTokenChecker,
         IConnectionStringHasher connectionStringHasher,
+        IAbpEfCoreDtmMsgBarrierManager abpEfCoreDtmMsgBarrierManager,
         IConnectionStringResolver connectionStringResolver)
     {
         Logger = logger;
         CurrentTenant = currentTenant;
         ServiceProvider = serviceProvider;
-        BranchBarrierFactory = branchBarrierFactory;
         ActionApiTokenChecker = actionApiTokenChecker;
         ConnectionStringHasher = connectionStringHasher;
+        AbpEfCoreDtmMsgBarrierManager = abpEfCoreDtmMsgBarrierManager;
         ConnectionStringResolver = connectionStringResolver;
     }
 
@@ -53,8 +53,6 @@ public class DtmEfCoreGrpcService : EfCore.DtmEfCoreGrpcService.DtmEfCoreGrpcSer
         {
             return new EfCore.DtmStyleResponse { DtmResult = Constant.ResultFailure };
         }
-        
-        var barrier = BranchBarrierFactory.CreateBranchBarrier(context, Logger);
 
         var tenantId = request.Info.TenantId.IsNullOrEmpty() ? (Guid?)null : Guid.Parse(request.Info.TenantId);
 
@@ -74,10 +72,12 @@ public class DtmEfCoreGrpcService : EfCore.DtmEfCoreGrpcService.DtmEfCoreGrpcSer
             return new EfCore.DtmStyleResponse { DtmResult = Constant.ResultFailure };
         }
 
+        var gid = context.RequestHeaders.FirstOrDefault(m => m.Key.Equals("dtm-gid"))?.Value ??
+                  throw new DtmException("Cannot get dtm-gid from the gRPC request headers.");
+
         return new EfCore.DtmStyleResponse
         {
-            // Todo: different DB provider?
-            DtmResult = await barrier.QueryPrepared(dbContext.Database.GetDbConnection())
+            DtmResult = await AbpEfCoreDtmMsgBarrierManager.QueryPreparedAsync(dbContext, gid)
         };
     }
 }

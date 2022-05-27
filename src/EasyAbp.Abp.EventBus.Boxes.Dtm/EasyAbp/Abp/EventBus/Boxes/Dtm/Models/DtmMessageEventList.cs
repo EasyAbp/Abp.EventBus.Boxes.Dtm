@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using Volo.Abp.EventBus.Distributed;
 
@@ -10,8 +9,11 @@ public class DtmMessageEventList : List<OutgoingEventInfo>
     [NotNull]
     public DbConnectionLookupInfoModel DbConnectionLookupInfo { get; set; }
 
-    public DtmMessageEventList([NotNull] DbConnectionLookupInfoModel dbConnectionLookupInfo)
+    public object UsableDbContext { get; set; }
+    
+    public DtmMessageEventList([NotNull] DbConnectionLookupInfoModel dbConnectionLookupInfo, object usableDbContext)
     {
         DbConnectionLookupInfo = dbConnectionLookupInfo;
+        UsableDbContext = usableDbContext;
     }
 }

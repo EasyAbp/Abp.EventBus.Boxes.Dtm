@@ -28,7 +28,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IDbContextEventOutbox<TDbCont
         var dbContext = await DbContextProvider.GetDbContextAsync();
 
         await DtmMessageManager.AddEventAsync(
-            typeof(TDbContext),
+            dbContext,
             dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException(),
             dbContext.Database.CurrentTransaction?.GetDbTransaction(),
             outgoingEvent);

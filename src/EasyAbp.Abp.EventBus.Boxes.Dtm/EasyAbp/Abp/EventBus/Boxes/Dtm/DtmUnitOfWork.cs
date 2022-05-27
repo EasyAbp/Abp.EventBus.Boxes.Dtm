@@ -24,7 +24,7 @@ public class DtmUnitOfWork : UnitOfWork
     {
         OnCompleted(async () => await DtmMessageManager.SubmitAsync());
         
-        await DtmMessageManager.PrepareAsync();
+        await DtmMessageManager.InsertBarriersAndPrepareAsync();
         
         await base.CommitTransactionsAsync();
     }

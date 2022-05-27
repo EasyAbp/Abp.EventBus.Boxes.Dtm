@@ -33,7 +33,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TD
         var dbContext = await DbContextProvider.GetDbContextAsync();
 
         await DtmMessageManager.AddEventAsync(
-            typeof(TDbContext),
+            dbContext,
             ConnectionStringNameAttribute.GetConnStringName<TDbContext>(),
             dbContext.SessionHandle,
             outgoingEvent);
