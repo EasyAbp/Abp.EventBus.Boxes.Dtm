@@ -30,14 +30,10 @@ public static class AbpEventBusBoxesDtmExtensions
     public static IServiceCollection AddAbpDtmGrpc(this IServiceCollection services,
         Action<AbpDtmEventBoxesOptions> setupAction)
     {
-        services.TryAddSingleton<IDtmDriver, DefaultDtmDriver>();
-        services.TryAddSingleton<IDtmTransFactory, DtmTransFactory>();
-        services.TryAddSingleton<IDtmgRPCClient, DtmgRPCClient>();
-
         var abpDtmOptions = new AbpDtmEventBoxesOptions();
         setupAction?.Invoke(abpDtmOptions);
-        
-        services.Configure<DtmOptions>(x =>
+
+        services.AddDtmGrpc(x =>
         {
             x.DtmGrpcUrl = abpDtmOptions.DtmGrpcUrl;
             x.BarrierTableName = abpDtmOptions.BarrierTableName;
