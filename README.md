@@ -29,6 +29,7 @@ await _distributedEventBus.PublishAsync(eto2, useOutbox: true);  // The useOutbo
 ```
 The DTM outbox collects them temporarily. Let's see what it will do when you complete the current unit of work:
 ```csharp
+// Code snippet for UnitOfWork.cs
 protected override async Task CommitTransactionsAsync()
 {
     // Step 1: inserting a record to the DTM barrier table within the current DB transaction,
