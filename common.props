@@ -6,7 +6,7 @@
     <AbpProjectType>module</AbpProjectType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>EasyAbp Team</Authors>
-    <Description>DTM implementation module of ABP event outbox.</Description>
+    <Description>The DTM implementation module of ABP event outbox.</Description>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/58311641?s=128</PackageIconUrl>
     <PackageProjectUrl>https://github.com/EasyAbp/Abp.EventBus.Boxes.Dtm</PackageProjectUrl>
     <RepositoryUrl>https://github.com/EasyAbp/Abp.EventBus.Boxes.Dtm</RepositoryUrl>
