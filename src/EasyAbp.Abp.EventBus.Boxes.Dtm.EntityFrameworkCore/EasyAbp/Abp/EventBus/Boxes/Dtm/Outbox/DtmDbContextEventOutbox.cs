@@ -5,24 +5,24 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.DistributedEvents;
 using Volo.Abp.EventBus.Distributed;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
 public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbContext>
     where TDbContext : IEfCoreDbContext
 {
-    protected AsyncLocalDtmOutboxEventBag AsyncLocalEventBag { get; }
+    protected IUnitOfWorkManager UnitOfWorkManager { get; }
     protected IDbContextProvider<TDbContext> DbContextProvider { get; }
     protected IDtmMessageManager DtmMessageManager { get; }
 
     public DtmDbContextEventOutbox(
-        AsyncLocalDtmOutboxEventBag asyncLocalEventBag,
+        IUnitOfWorkManager unitOfWorkManager,
         IDbContextProvider<TDbContext> dbContextProvider,
         IDtmMessageManager dtmMessageManager)
     {
-        AsyncLocalEventBag = asyncLocalEventBag;
+        UnitOfWorkManager = unitOfWorkManager;
         DbContextProvider = dbContextProvider;
         DtmMessageManager = dtmMessageManager;
     }
@@ -32,7 +32,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
         var dbContext = await DbContextProvider.GetDbContextAsync();
 
         await DtmMessageManager.AddEventAsync(
-            AsyncLocalEventBag.GetOrCreate(),
+            ((DtmUnitOfWork)UnitOfWorkManager.Current).GetDtmOutboxEventBag(),
             dbContext,
             dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException(),
             dbContext.Database.CurrentTransaction?.GetDbTransaction(),

@@ -7,29 +7,26 @@ using Microsoft.Extensions.Options;
 using Volo.Abp.Data;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MongoDB;
-using Volo.Abp.MongoDB.DistributedEvents;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
 public class DtmMongoDbContextEventOutbox<TDbContext> : IDtmMongoDbContextEventOutbox<TDbContext>
     where TDbContext : IAbpMongoDbContext
 {
+    protected IUnitOfWorkManager UnitOfWorkManager { get; }
     protected IMongoDbContextProvider<TDbContext> DbContextProvider { get; }
-
-    protected AsyncLocalDtmOutboxEventBag AsyncLocalEventBag { get; }
-
     protected AbpDtmEventBoxesOptions AbpDtmEventBoxesOptions { get; }
-
     protected IDtmMessageManager DtmMessageManager { get; }
 
     public DtmMongoDbContextEventOutbox(
+        IUnitOfWorkManager unitOfWorkManager,
         IMongoDbContextProvider<TDbContext> dbContextProvider,
-        AsyncLocalDtmOutboxEventBag asyncLocalEventBag,
         IOptions<AbpDtmEventBoxesOptions> dtmOutboxOptions,
         IDtmMessageManager dtmMessageManager)
     {
+        UnitOfWorkManager = unitOfWorkManager;
         DbContextProvider = dbContextProvider;
-        AsyncLocalEventBag = asyncLocalEventBag;
         AbpDtmEventBoxesOptions = dtmOutboxOptions.Value;
         DtmMessageManager = dtmMessageManager;
     }
@@ -39,7 +36,7 @@ public class DtmMongoDbContextEventOutbox<TDbContext> : IDtmMongoDbContextEventO
         var dbContext = await DbContextProvider.GetDbContextAsync();
 
         await DtmMessageManager.AddEventAsync(
-            AsyncLocalEventBag.GetOrCreate(),
+            ((DtmUnitOfWork)UnitOfWorkManager.Current).GetDtmOutboxEventBag(),
             dbContext,
             ConnectionStringNameAttribute.GetConnStringName<TDbContext>(),
             dbContext.SessionHandle,
