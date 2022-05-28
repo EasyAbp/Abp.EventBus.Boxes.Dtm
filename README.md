@@ -5,7 +5,7 @@ The [DTM](https://github.com/dtm-labs/dtm) implementation module of ABP distribu
 
 This implementation uses DTM's [2-phase messages](https://en.dtm.pub/practice/msg.html) to support ABP event boxes in the [multi-tenant & multi-database scene](https://github.com/abpframework/abp/issues/10036).
 
-You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which will help to understand this module.
+You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which help to understand this module.
 
 ## Differences From the ABP's Default Event Boxes
 
@@ -20,7 +20,7 @@ You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which will h
 | No additional external infrastructure        	| :x:                       	| :heavy_check_mark:     	|
 | Dashboard and Alarm                          	| :heavy_check_mark:        	| :x:                    	|
 
-## How Does the DTM Outbox Works?
+## How Does the DTM Outbox Work?
 
 You are publishing events using the ABP event outbox:
 ```csharp
@@ -28,7 +28,7 @@ await _distributedEventBus.PublishAsync(eto1, useOutbox: true);
 await _distributedEventBus.PublishAsync(eto2, useOutbox: true);  // The useOutbox is true by default.
 ```
 The DTM outbox collects them temporarily. Let's see what it will do when you complete the current unit of work:
-```csharp
+```CSharp
 // Code snippet for UnitOfWork.cs
 protected override async Task CommitTransactionsAsync()
 {
@@ -56,9 +56,9 @@ Now, the DTM server has received a "submit" request. It invokes the app's `Publi
    
 </details>
 
-If you are still confused about how it ensures the eventual consistency, see DTM's [2-phase messages doc](https://en.dtm.pub/practice/msg.html) for more information.
+If you are still confused about how it ensures eventual consistency, see DTM's [2-phase messages doc](https://en.dtm.pub/practice/msg.html) for more information.
 
-## How Does the DTM Inbox Works?
+## How Does the DTM Inbox Work?
 
 Todo.
 
