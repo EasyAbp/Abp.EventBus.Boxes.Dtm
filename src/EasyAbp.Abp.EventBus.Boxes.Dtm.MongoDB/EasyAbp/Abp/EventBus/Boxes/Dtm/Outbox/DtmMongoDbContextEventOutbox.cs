@@ -11,8 +11,8 @@ using Volo.Abp.MongoDB.DistributedEvents;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
-public class DtmMongoDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TDbContext>
-    where TDbContext : IHasEventOutbox
+public class DtmMongoDbContextEventOutbox<TDbContext> : IDtmMongoDbContextEventOutbox<TDbContext>
+    where TDbContext : IAbpMongoDbContext
 {
     protected IMongoDbContextProvider<TDbContext> DbContextProvider { get; }
 

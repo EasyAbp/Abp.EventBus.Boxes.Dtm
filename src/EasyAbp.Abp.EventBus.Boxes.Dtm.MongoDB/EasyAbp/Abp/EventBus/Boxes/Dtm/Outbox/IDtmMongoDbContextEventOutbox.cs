@@ -1,9 +1,9 @@
-﻿using Volo.Abp.MongoDB.DistributedEvents;
+﻿using Volo.Abp.EventBus.Distributed;
+using Volo.Abp.MongoDB;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
-public interface IDtmMongoDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TDbContext>
-    where TDbContext : IHasEventOutbox
+public interface IDtmMongoDbContextEventOutbox<TDbContext> : IEventOutbox where TDbContext : IAbpMongoDbContext
 {
     
 }

@@ -10,7 +10,8 @@ using Volo.Abp.EventBus.Distributed;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
-public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbContext> where TDbContext : IHasEventOutbox
+public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbContext>
+    where TDbContext : IEfCoreDbContext
 {
     protected AsyncLocalDtmOutboxEventBag AsyncLocalEventBag { get; }
     protected IDbContextProvider<TDbContext> DbContextProvider { get; }
@@ -25,7 +26,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
         DbContextProvider = dbContextProvider;
         DtmMessageManager = dtmMessageManager;
     }
-    
+
     public virtual async Task EnqueueAsync(OutgoingEventInfo outgoingEvent)
     {
         var dbContext = await DbContextProvider.GetDbContextAsync();
@@ -38,7 +39,8 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
             outgoingEvent);
     }
 
-    public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount, CancellationToken cancellationToken = new())
+    public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount,
+        CancellationToken cancellationToken = new())
     {
         throw new NotSupportedException();
     }
