@@ -9,21 +9,27 @@ public class DtmUnitOfWork : UnitOfWork
 {
     protected IDtmMessageManager DtmMessageManager { get; }
 
+    protected AsyncLocalDtmOutboxEventBag AsyncLocalEventBag { get; }
+
     public DtmUnitOfWork(
         IServiceProvider serviceProvider,
         IDtmMessageManager dtmMessageManager,
+        AsyncLocalDtmOutboxEventBag asyncLocalEventBag,
         IUnitOfWorkEventPublisher unitOfWorkEventPublisher,
         IOptions<AbpUnitOfWorkDefaultOptions> options) : base(serviceProvider, unitOfWorkEventPublisher, options)
     {
         DtmMessageManager = dtmMessageManager;
+        AsyncLocalEventBag = asyncLocalEventBag;
     }
 
     protected override async Task CommitTransactionsAsync()
     {
-        OnCompleted(async () => await DtmMessageManager.SubmitAsync());
-        
-        await DtmMessageManager.InsertBarriersAndPrepareAsync();
-        
+        var eventBag = AsyncLocalEventBag.GetOrCreate();
+
+        OnCompleted(async () => await DtmMessageManager.SubmitAsync(eventBag));
+
+        await DtmMessageManager.InsertBarriersAndPrepareAsync(eventBag);
+
         await base.CommitTransactionsAsync();
     }
 }

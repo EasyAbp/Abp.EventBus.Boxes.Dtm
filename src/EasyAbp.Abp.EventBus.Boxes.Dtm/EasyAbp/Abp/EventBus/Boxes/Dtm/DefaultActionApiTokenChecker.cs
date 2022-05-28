@@ -7,15 +7,15 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
 public class DefaultActionApiTokenChecker : IActionApiTokenChecker, ITransientDependency
 {
-    private readonly DtmOutboxOptions _dtmOptions;
+    private readonly AbpDtmEventBoxesOptions _options;
 
-    public DefaultActionApiTokenChecker(IOptions<DtmOutboxOptions> dtmOptions)
+    public DefaultActionApiTokenChecker(IOptions<AbpDtmEventBoxesOptions> options)
     {
-        _dtmOptions = dtmOptions.Value;
+        _options = options.Value;
     }
     
     public virtual Task<bool> IsCorrectAsync(string token)
     {
-        return Task.FromResult(token == _dtmOptions.ActionApiToken);
+        return Task.FromResult(token == _options.ActionApiToken);
     }
 }

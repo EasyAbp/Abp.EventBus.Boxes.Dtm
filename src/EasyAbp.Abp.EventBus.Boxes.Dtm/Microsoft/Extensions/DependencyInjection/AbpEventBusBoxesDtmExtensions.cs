@@ -12,27 +12,38 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class AbpEventBusBoxesDtmExtensions
 {
-    public static IServiceCollection AddDtmOutbox(this IServiceCollection services, Action<DtmOutboxOptions> setupAction)
+    public static IServiceCollection AddDtmOutbox(this IServiceCollection services,
+        Action<AbpDtmEventBoxesOptions> setupAction)
     {
         services.Configure(setupAction);
 
-        services.AddTransient<DtmUnitOfWork>();
-        services.AddTransient<NullOutboxSender>();
+        services.TryAddTransient<DtmUnitOfWork>();
+        services.TryAddTransient<NullOutboxSender>();
         services.Replace(ServiceDescriptor.Transient<IUnitOfWork, DtmUnitOfWork>());
         services.Replace(ServiceDescriptor.Transient<IOutboxSender, NullOutboxSender>());
-        
+
         services.AddAbpDtmGrpc(setupAction);
-        
+
         return services;
     }
 
-    public static IServiceCollection AddAbpDtmGrpc(this IServiceCollection services, Action<DtmOutboxOptions> setupAction)
+    public static IServiceCollection AddAbpDtmGrpc(this IServiceCollection services,
+        Action<AbpDtmEventBoxesOptions> setupAction)
     {
         services.TryAddSingleton<IDtmDriver, DefaultDtmDriver>();
         services.TryAddSingleton<IDtmTransFactory, DtmTransFactory>();
         services.TryAddSingleton<IDtmgRPCClient, DtmgRPCClient>();
+
+        var abpDtmOptions = new AbpDtmEventBoxesOptions();
+        setupAction?.Invoke(abpDtmOptions);
         
-        // Todo: map DtmOutboxOptions to and configure the DtmOptions.
+        services.Configure<DtmOptions>(x =>
+        {
+            x.DtmGrpcUrl = abpDtmOptions.DtmGrpcUrl;
+            x.BarrierTableName = abpDtmOptions.BarrierTableName;
+            x.DtmTimeout = abpDtmOptions.DtmTimeout;
+            x.BranchTimeout = abpDtmOptions.BranchTimeout;
+        });
 
         return services;
     }

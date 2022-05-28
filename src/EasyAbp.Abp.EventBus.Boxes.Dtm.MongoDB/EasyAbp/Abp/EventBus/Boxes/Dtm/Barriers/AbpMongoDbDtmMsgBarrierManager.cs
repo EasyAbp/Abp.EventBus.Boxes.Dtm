@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DtmCommon;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -13,15 +14,15 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongoDbContext>,
     IAbpMongoDbDtmMsgBarrierManager, ITransientDependency
 {
-    protected DtmOptions DtmOptions { get; }
+    protected AbpDtmEventBoxesOptions Options { get; }
 
     private ILogger<AbpMongoDbDtmMsgBarrierManager> Logger { get; }
 
     public AbpMongoDbDtmMsgBarrierManager(
-        IOptions<DtmOptions> dtmOptions,
+        IOptions<AbpDtmEventBoxesOptions> options,
         ILogger<AbpMongoDbDtmMsgBarrierManager> logger)
     {
-        DtmOptions = dtmOptions.Value;
+        Options = options.Value;
         Logger = logger;
     }
 
@@ -62,7 +63,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
         try
         {
-            var fs = DtmOptions.BarrierTableName.Split('.');
+            var fs = Options.BarrierTableName.Split('.');
 
             var barrier = dbContext.Client.GetDatabase(fs[0]).GetCollection<DtmBarrierDocument>(fs[1]);
 
@@ -90,7 +91,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     protected virtual async Task CheckAndInsertBarrierAsync(IAbpMongoDbContext dbContext, string gid,
         string reason)
     {
-        var fs = DtmOptions.BarrierTableName.Split('.');
+        var fs = Options.BarrierTableName.Split('.');
         var barrier = dbContext.Client.GetDatabase(fs[0]).GetCollection<DtmBarrierDocument>(fs[1]);
 
         List<DtmBarrierDocument> res;

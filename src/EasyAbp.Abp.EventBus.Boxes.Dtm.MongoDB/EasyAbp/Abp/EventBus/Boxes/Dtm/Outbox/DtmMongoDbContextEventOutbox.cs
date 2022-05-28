@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
@@ -12,34 +11,43 @@ using Volo.Abp.MongoDB.DistributedEvents;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
-public class DtmMongoDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TDbContext> where TDbContext : IHasEventOutbox
+public class DtmMongoDbContextEventOutbox<TDbContext> : IMongoDbContextEventOutbox<TDbContext>
+    where TDbContext : IHasEventOutbox
 {
     protected IMongoDbContextProvider<TDbContext> DbContextProvider { get; }
-    protected DtmOutboxOptions DtmOutboxOptions { get; }
+
+    protected AsyncLocalDtmOutboxEventBag AsyncLocalEventBag { get; }
+
+    protected AbpDtmEventBoxesOptions AbpDtmEventBoxesOptions { get; }
+
     protected IDtmMessageManager DtmMessageManager { get; }
 
     public DtmMongoDbContextEventOutbox(
         IMongoDbContextProvider<TDbContext> dbContextProvider,
-        IOptions<DtmOutboxOptions> dtmOutboxOptions,
+        AsyncLocalDtmOutboxEventBag asyncLocalEventBag,
+        IOptions<AbpDtmEventBoxesOptions> dtmOutboxOptions,
         IDtmMessageManager dtmMessageManager)
     {
         DbContextProvider = dbContextProvider;
-        DtmOutboxOptions = dtmOutboxOptions.Value;
+        AsyncLocalEventBag = asyncLocalEventBag;
+        AbpDtmEventBoxesOptions = dtmOutboxOptions.Value;
         DtmMessageManager = dtmMessageManager;
     }
-    
+
     public virtual async Task EnqueueAsync(OutgoingEventInfo outgoingEvent)
     {
         var dbContext = await DbContextProvider.GetDbContextAsync();
 
         await DtmMessageManager.AddEventAsync(
+            AsyncLocalEventBag.GetOrCreate(),
             dbContext,
             ConnectionStringNameAttribute.GetConnStringName<TDbContext>(),
             dbContext.SessionHandle,
             outgoingEvent);
     }
 
-    public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount, CancellationToken cancellationToken = new())
+    public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount,
+        CancellationToken cancellationToken = new())
     {
         throw new NotSupportedException();
     }

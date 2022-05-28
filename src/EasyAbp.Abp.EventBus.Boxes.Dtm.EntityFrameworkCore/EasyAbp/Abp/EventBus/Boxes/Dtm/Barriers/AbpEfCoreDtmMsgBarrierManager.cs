@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
 using DtmCommon;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
@@ -15,15 +16,15 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCoreDbContext>,
     IAbpEfCoreDtmMsgBarrierManager, ITransientDependency
 {
-    protected DtmOptions DtmOptions { get; }
+    protected AbpDtmEventBoxesOptions Options { get; }
 
     private ILogger<AbpEfCoreDtmMsgBarrierManager> Logger { get; }
 
     public AbpEfCoreDtmMsgBarrierManager(
-        IOptions<DtmOptions> dtmOptions,
+        IOptions<AbpDtmEventBoxesOptions> options,
         ILogger<AbpEfCoreDtmMsgBarrierManager> logger)
     {
-        DtmOptions = dtmOptions.Value;
+        Options = options.Value;
         Logger = logger;
     }
     
@@ -59,7 +60,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCore
         try
         {
             var reason = await dbContext.Database.GetDbConnection().QueryFirstOrDefaultAsync<string>(
-                string.Format(BarrierSqlTemplates.QueryPreparedSqlFormat, DtmOptions.BarrierTableName),
+                string.Format(BarrierSqlTemplates.QueryPreparedSqlFormat, Options.BarrierTableName),
                 new
                 {
                     gid, branch_id = Constant.Barrier.MSG_BRANCHID, op = Constant.TYPE_MSG,
@@ -84,7 +85,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCore
         string reason)
     {
         var tableAndValues = string.Format(BarrierSqlTemplates.DtmBarrierTableAndValueSqlFormat,
-            DtmOptions.BarrierTableName);
+            Options.BarrierTableName);
 
         var special = BarrierSqlTemplates.DbProviderSpecialMapping.GetOrDefault(dbContext.Database.ProviderName);
 

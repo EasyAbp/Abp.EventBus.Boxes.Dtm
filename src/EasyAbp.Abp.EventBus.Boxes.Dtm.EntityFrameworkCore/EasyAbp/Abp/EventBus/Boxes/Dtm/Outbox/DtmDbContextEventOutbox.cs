@@ -12,13 +12,16 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 
 public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbContext> where TDbContext : IHasEventOutbox
 {
+    protected AsyncLocalDtmOutboxEventBag AsyncLocalEventBag { get; }
     protected IDbContextProvider<TDbContext> DbContextProvider { get; }
     protected IDtmMessageManager DtmMessageManager { get; }
 
     public DtmDbContextEventOutbox(
+        AsyncLocalDtmOutboxEventBag asyncLocalEventBag,
         IDbContextProvider<TDbContext> dbContextProvider,
         IDtmMessageManager dtmMessageManager)
     {
+        AsyncLocalEventBag = asyncLocalEventBag;
         DbContextProvider = dbContextProvider;
         DtmMessageManager = dtmMessageManager;
     }
@@ -28,6 +31,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
         var dbContext = await DbContextProvider.GetDbContextAsync();
 
         await DtmMessageManager.AddEventAsync(
+            AsyncLocalEventBag.GetOrCreate(),
             dbContext,
             dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException(),
             dbContext.Database.CurrentTransaction?.GetDbTransaction(),
@@ -44,7 +48,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
         throw new NotSupportedException();
     }
 
-    public async Task DeleteManyAsync(IEnumerable<Guid> ids)
+    public virtual async Task DeleteManyAsync(IEnumerable<Guid> ids)
     {
         throw new NotSupportedException();
     }

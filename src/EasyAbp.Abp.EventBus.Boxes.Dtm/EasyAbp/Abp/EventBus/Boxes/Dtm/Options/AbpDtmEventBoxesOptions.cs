@@ -2,7 +2,7 @@
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 
-public class DtmOutboxOptions
+public class AbpDtmEventBoxesOptions
 {
     /// <summary>
     /// Use this token to invoke action APIs.
