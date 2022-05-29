@@ -23,6 +23,12 @@ public class DtmUnitOfWork : UnitOfWork
 
     protected override async Task CommitTransactionsAsync()
     {
+        if (!EventBag.HasAnyEvent())
+        {
+            await base.CommitTransactionsAsync();
+            return;
+        }
+        
         OnCompleted(async () => await DtmMessageManager.SubmitAsync(EventBag));
 
         await DtmMessageManager.InsertBarriersAndPrepareAsync(EventBag);

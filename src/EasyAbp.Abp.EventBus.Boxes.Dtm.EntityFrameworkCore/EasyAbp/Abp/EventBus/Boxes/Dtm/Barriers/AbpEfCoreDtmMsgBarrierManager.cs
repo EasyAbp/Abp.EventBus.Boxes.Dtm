@@ -19,15 +19,17 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
     IAbpEfCoreDtmMsgBarrierManager, ITransientDependency
 {
     protected AbpDtmEventBoxesOptions Options { get; }
-
     private ILogger<AbpEfCoreDtmMsgBarrierManager> Logger { get; }
+    protected IDtmBarrierTableInitializer BarrierTableInitializer { get; }
 
     public AbpEfCoreDtmMsgBarrierManager(
         IOptions<AbpDtmEventBoxesOptions> options,
-        ILogger<AbpEfCoreDtmMsgBarrierManager> logger)
+        ILogger<AbpEfCoreDtmMsgBarrierManager> logger,
+        IDtmBarrierTableInitializer barrierTableInitializer)
     {
         Options = options.Value;
         Logger = logger;
+        BarrierTableInitializer = barrierTableInitializer;
     }
     
     public override async Task InsertBarrierAsync(IEfCoreDbContext dbContext, string gid)
@@ -86,6 +88,8 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
     protected virtual async Task<int> InternalInsertBarrierAsync(IEfCoreDbContext dbContext, string gid,
         string reason)
     {
+        await BarrierTableInitializer.TryCreateTableAsync(dbContext);
+        
         var tableAndValues = string.Format(BarrierSqlTemplates.DtmBarrierTableAndValueSqlFormat,
             Options.BarrierTableName);
 
@@ -94,7 +98,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         if (special is null)
         {
             throw new NotSupportedException(
-                $"Database provider {dbContext.Database.ProviderName} is not supported by the DTM outbox!");
+                $"Database provider {dbContext.Database.ProviderName} is not supported by the event boxes!");
         }
         
         var sql = special.GetInsertIgnoreTemplate(tableAndValues, Constant.Barrier.PG_CONSTRAINT);
