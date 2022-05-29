@@ -10,10 +10,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.Uow;
+using Volo.Abp.Uow.EntityFrameworkCore;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 
-public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCoreDbContext>,
+public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbContext>,
     IAbpEfCoreDtmMsgBarrierManager, ITransientDependency
 {
     protected AbpDtmEventBoxesOptions Options { get; }
@@ -28,7 +30,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCore
         Logger = logger;
     }
     
-    public override async Task InsertBarrierAsync(IAbpEfCoreDbContext dbContext, string gid)
+    public override async Task InsertBarrierAsync(IEfCoreDbContext dbContext, string gid)
     {
         if (dbContext.Database.CurrentTransaction is null)
         {
@@ -45,7 +47,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCore
         }
     }
 
-    public override async Task<string> QueryPreparedAsync(IAbpEfCoreDbContext dbContext, string gid)
+    public override async Task<string> QueryPreparedAsync(IEfCoreDbContext dbContext, string gid)
     {
         try
         {
@@ -81,7 +83,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCore
         return string.Empty;
     }
 
-    protected virtual async Task<int> InternalInsertBarrierAsync(IAbpEfCoreDbContext dbContext, string gid,
+    protected virtual async Task<int> InternalInsertBarrierAsync(IEfCoreDbContext dbContext, string gid,
         string reason)
     {
         var tableAndValues = string.Format(BarrierSqlTemplates.DtmBarrierTableAndValueSqlFormat,
@@ -111,14 +113,14 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpEfCore
         return affected;
     }
 
-    public override async Task<bool> TryInvokeInsertBarrierAsync(object dbContext, string gid)
+    public override async Task<bool> TryInvokeInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
     {
-        if (IsValidDbContextType(dbContext.GetType()))
+        if (IsValidDatabaseApi<EfCoreDatabaseApi>(databaseApi))
         {
             return false;
         }
 
-        await InsertBarrierAsync(dbContext as IAbpEfCoreDbContext, gid);
+        await InsertBarrierAsync(((EfCoreDatabaseApi)databaseApi).DbContext, gid);
 
         return true;
     }

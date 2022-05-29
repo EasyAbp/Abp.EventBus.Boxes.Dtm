@@ -2,6 +2,6 @@
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 
-public interface IAbpEfCoreDtmMsgBarrierManager : IDtmMsgBarrierManager<IAbpEfCoreDbContext>
+public interface IAbpEfCoreDtmMsgBarrierManager : IDtmMsgBarrierManager<IEfCoreDbContext>
 {
 }

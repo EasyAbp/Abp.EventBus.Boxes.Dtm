@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
@@ -9,20 +10,22 @@ public abstract class DtmMsgBarrierManagerBase<TDbContextInterface> : IDtmMsgBar
 {
     protected List<Type> MatchedTypesCache { get; } = new();
 
-    public abstract Task<bool> TryInvokeInsertBarrierAsync(object dbContext, string gid);
+    public abstract Task<bool> TryInvokeInsertBarrierAsync(IDatabaseApi databaseApi, string gid);
 
-    protected virtual bool IsValidDbContextType(Type dbContextType)
+    protected virtual bool IsValidDatabaseApi<TDatabaseApi>(IDatabaseApi databaseApi) where TDatabaseApi : IDatabaseApi
     {
-        if (dbContextType.IsIn(MatchedTypesCache))
+        var databaseApiType = databaseApi.GetType();
+        
+        if (databaseApiType.IsIn(MatchedTypesCache))
         {
             return true;
         }
         
-        var match = typeof(TDbContextInterface).IsIn(dbContextType.GetInterfaces());
+        var match = databaseApiType.IsAssignableFrom(typeof(TDatabaseApi));
 
         if (match)
         {
-            MatchedTypesCache.Add(dbContextType);
+            MatchedTypesCache.Add(databaseApiType);
         }
 
         return match;

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
@@ -13,7 +14,7 @@ public interface IDtmMsgBarrierManager<in TDbContextInterface> : IDtmMsgBarrierM
 public interface IDtmMsgBarrierManager
 {
     /// <summary>
-    /// Invokes InsertBarrierAsync method if the dbContext object has the same type as the barrier's DbContext type.
+    /// Invokes InsertBarrierAsync method if the <see cref="databaseApi"/> can be identified.
     /// </summary>
-    Task<bool> TryInvokeInsertBarrierAsync(object dbContext, [NotNull] string gid);
+    Task<bool> TryInvokeInsertBarrierAsync(IDatabaseApi databaseApi, [NotNull] string gid);
 }

@@ -8,6 +8,8 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.MongoDB;
+using Volo.Abp.Uow;
+using Volo.Abp.Uow.MongoDB;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 
@@ -130,14 +132,14 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         });
     }
 
-    public override async Task<bool> TryInvokeInsertBarrierAsync(object dbContext, string gid)
+    public override async Task<bool> TryInvokeInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
     {
-        if (IsValidDbContextType(dbContext.GetType()))
+        if (IsValidDatabaseApi<MongoDbDatabaseApi>(databaseApi))
         {
             return false;
         }
 
-        await InsertBarrierAsync(dbContext as IAbpMongoDbContext, gid);
+        await InsertBarrierAsync(((MongoDbDatabaseApi)databaseApi).DbContext, gid);
 
         return true;
     }

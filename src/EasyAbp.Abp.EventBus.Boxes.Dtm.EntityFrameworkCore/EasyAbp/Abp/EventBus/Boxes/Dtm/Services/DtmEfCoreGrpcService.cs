@@ -63,7 +63,7 @@ public class DtmEfCoreGrpcService : EfCore.DtmEfCoreGrpcService.DtmEfCoreGrpcSer
             ServiceProvider.GetRequiredService(typeof(IDbContextProvider<>).MakeGenericType(dbContextType));
 
         var methodInfo = dbContextProvider.GetType().GetMethod("GetDbContextAsync")!;
-        var dbContext = await ((Task<IAbpEfCoreDbContext>)methodInfo.Invoke(dbContextProvider, null))!;
+        var dbContext = await ((Task<IEfCoreDbContext>)methodInfo.Invoke(dbContextProvider, null))!;
 
         var connectionString = await ConnectionStringResolver.ResolveAsync(dbContextType);
 

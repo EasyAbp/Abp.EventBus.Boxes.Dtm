@@ -8,9 +8,12 @@ using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Volo.Abp;
+using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MultiTenancy;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
@@ -25,10 +28,14 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
     protected IServiceProvider ServiceProvider { get; }
     
     protected IDtmMsgGidProvider DtmMsgGidProvider { get; }
+    
+    protected IUnitOfWorkManager UnitOfWorkManager { get; }
 
     protected IEventInfosSerializer EventInfosSerializer { get; }
     
     protected IConnectionStringHasher ConnectionStringHasher { get; }
+    
+    protected IConnectionStringResolver ConnectionStringResolver { get; }
 
     protected AbpDtmEventBoxesOptions AbpDtmEventBoxesOptions { get; }
 
@@ -38,8 +45,10 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
         IDtmTransFactory dtmTransFactory,
         IServiceProvider serviceProvider,
         IDtmMsgGidProvider dtmMsgGidProvider,
+        IUnitOfWorkManager unitOfWorkManager,
         IEventInfosSerializer eventInfosSerializer,
         IConnectionStringHasher connectionStringHasher,
+        IConnectionStringResolver connectionStringResolver,
         IOptions<AbpDtmEventBoxesOptions> dtmOutboxOptions)
     {
         CurrentTenant = currentTenant;
@@ -47,8 +56,10 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
         DtmTransFactory = dtmTransFactory;
         ServiceProvider = serviceProvider;
         DtmMsgGidProvider = dtmMsgGidProvider;
+        UnitOfWorkManager = unitOfWorkManager;
         EventInfosSerializer = eventInfosSerializer;
         ConnectionStringHasher = connectionStringHasher;
+        ConnectionStringResolver = connectionStringResolver;
         AbpDtmEventBoxesOptions = dtmOutboxOptions.Value;
     }
 
@@ -140,10 +151,25 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
 
             foreach (var barrierManager in barrierManagers)
             {
-                await barrierManager.TryInvokeInsertBarrierAsync(model.DbConnectionLookupInfo.DbContextType,
-                    DtmMsgGidProvider.Create());
+                await barrierManager.TryInvokeInsertBarrierAsync(
+                    await GetDatabaseApiAsync(model.DbConnectionLookupInfo.DbContextType),
+                    DtmMsgGidProvider.Create()
+                );
             }
         }
+    }
+
+    protected virtual async Task<IDatabaseApi> GetDatabaseApiAsync(Type targetDbContextType)
+    {
+        var connectionString = await ConnectionStringResolver.ResolveAsync(targetDbContextType);
+     
+        var databaseApiKey = $"{targetDbContextType.FullName}_{connectionString}";
+
+        var databaseApi = UnitOfWorkManager.Current.FindDatabaseApi(databaseApiKey);
+        
+        Check.NotNull(databaseApi, nameof(databaseApi));
+
+        return databaseApi;
     }
 
     protected virtual string GenerateQueryPreparedAddress(DtmMessageInfoModel model)
