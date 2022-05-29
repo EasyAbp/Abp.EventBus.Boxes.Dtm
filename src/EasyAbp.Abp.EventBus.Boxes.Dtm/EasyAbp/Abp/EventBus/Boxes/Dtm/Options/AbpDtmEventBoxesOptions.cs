@@ -18,12 +18,13 @@ public class AbpDtmEventBoxesOptions
     public string DtmGrpcUrl { get; set; }
 
     /// <summary>
-    /// The barrier table name. Recommended values:
-    /// SQL Server -> DtmBarrier
-    /// MySQL -> dtm_barrier
-    /// PostgreSQL -> dtm.barrier
+    /// The barrier table name. It will use the default value if you keep it <c>null</c>:<br /><br />
+    /// SQL Server -> dtm.Barrier<br />
+    /// MySQL -> dtm_barrier<br />
+    /// PostgreSQL -> dtm.barrier<br />
+    /// MongoDB -> dtm_barrier
     /// </summary>
-    public string BarrierTableName { get; set; } = "dtm_barrier";
+    public string BarrierTableName { get; set; } = null;
 
     /// <summary>
     /// dtm server request timeout in milliseconds, default 10,000 milliseconds(10s)

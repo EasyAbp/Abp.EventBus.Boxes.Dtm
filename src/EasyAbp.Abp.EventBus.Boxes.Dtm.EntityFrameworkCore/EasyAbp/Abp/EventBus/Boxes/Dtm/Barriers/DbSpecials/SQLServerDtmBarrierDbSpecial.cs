@@ -6,12 +6,15 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers.DbSpecials;
 
 public class SQLServerDtmBarrierDbSpecial : SqlServerDBSpecial, IDtmBarrierDbSpecial
 {
+    public static string DefaultBarrierTableName { get; set; } = "dtm.Barrier";
+    
     public virtual string GetCreateBarrierTableSql(AbpDtmEventBoxesOptions options)
     {
-        var split = options.BarrierTableName.Split('.', 2, StringSplitOptions.RemoveEmptyEntries);
+        var configuredTableName = options.BarrierTableName ?? DefaultBarrierTableName;
+        var split = configuredTableName.Split('.', 2, StringSplitOptions.RemoveEmptyEntries);
 
         var schemaName = split.Length == 2 ? split[0] : null;
-        var tableName = split.Length == 2 ? split[1] : options.BarrierTableName;
+        var tableName = split.Length == 2 ? split[1] : configuredTableName;
         var tableFullName = schemaName is null ? tableName : $"{schemaName}.{tableName}";
 
         var sql = string.Empty;
