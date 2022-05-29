@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
@@ -15,4 +16,9 @@ public class DtmOutboxEventBag
     /// DTM message for each transaction. Mapping from transaction objects to message models.
     /// </summary>
     public Dictionary<object, DtmMessageInfoModel> TransMessages { get; } = new();
+
+    public bool HasAnyEvent()
+    {
+        return DefaultMessage is not null || TransMessages.Any();
+    }
 }
