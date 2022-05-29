@@ -149,12 +149,11 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
         {
             var barrierManagers = ServiceProvider.GetServices<IDtmMsgBarrierManager>();
 
+            var databaseApi = await GetDatabaseApiAsync(model.DbConnectionLookupInfo.DbContextType);
+            
             foreach (var barrierManager in barrierManagers)
             {
-                await barrierManager.TryInvokeInsertBarrierAsync(
-                    await GetDatabaseApiAsync(model.DbConnectionLookupInfo.DbContextType),
-                    DtmMsgGidProvider.Create()
-                );
+                await barrierManager.TryInvokeInsertBarrierAsync(databaseApi, DtmMsgGidProvider.Create());
             }
         }
     }
