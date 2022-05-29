@@ -20,36 +20,35 @@ public class SQLServerDtmBarrierDbSpecial : SqlServerDBSpecial, IDtmBarrierDbSpe
         {
             sql += $@"
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{schemaName}')
-BEGIN
-	EXEC('CREATE SCHEMA [{schemaName}]')
-END;
+    BEGIN
+	    EXEC('CREATE SCHEMA [{schemaName}]')
+    END
 
 ";
         }
         
         sql += $@"
-IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[{tableFullName}]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-BEGIN
-    DROP TABLE [dbo].[{tableFullName}]
-END
+IF OBJECT_ID(N'{tableFullName}',N'U') IS NULL
+    BEGIN
+        CREATE TABLE {tableFullName}
+        (
+           [id] bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
+           [trans_type] varchar(45) NOT NULL DEFAULT(''),
+           [gid] varchar(128) NOT NULL DEFAULT(''),
+           [branch_id] varchar(128) NOT NULL DEFAULT(''),
+           [op] varchar(45) NOT NULL DEFAULT(''),
+           [barrier_id] varchar(45) NOT NULL DEFAULT(''),
+           [reason] varchar(45) NOT NULL DEFAULT(''),
+           [create_time] datetime NOT NULL DEFAULT(getdate()) ,
+           [update_time] datetime NOT NULL DEFAULT(getdate())
+        )
 
-CREATE TABLE [dbo].[{tableFullName}]
-(
-   [id] bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
-   [trans_type] varchar(45) NOT NULL DEFAULT(''),
-   [gid] varchar(128) NOT NULL DEFAULT(''),
-   [branch_id] varchar(128) NOT NULL DEFAULT(''),
-   [op] varchar(45) NOT NULL DEFAULT(''),
-   [barrier_id] varchar(45) NOT NULL DEFAULT(''),
-   [reason] varchar(45) NOT NULL DEFAULT(''),
-   [create_time] datetime NOT NULL DEFAULT(getdate()) ,
-   [update_time] datetime NOT NULL DEFAULT(getdate())
-)
-
-CREATE UNIQUE INDEX[ix_uniq_barrier] ON[dbo].[{tableFullName}]
-       ([gid] ASC, [branch_id] ASC, [op] ASC, [barrier_id] ASC)
-WITH(IGNORE_DUP_KEY = ON)
+        CREATE UNIQUE INDEX[ix_uniq_barrier] ON {tableFullName}
+               ([gid] ASC, [branch_id] ASC, [op] ASC, [barrier_id] ASC)
+        WITH(IGNORE_DUP_KEY = ON)
+    END
 ";
+        Console.WriteLine(sql);
         return sql;
     }
 }
