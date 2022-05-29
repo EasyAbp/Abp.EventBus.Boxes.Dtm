@@ -32,9 +32,9 @@ public class AbpDtmEventBoxesOptions
     /// </summary>
     public int BranchTimeout { get; set; } = 10 * 1000;
     
-    public string PublishEventsPath { get; set; } = "/DtmApi/PublishEvents";
+    public string PublishEventsPath { get; set; } = "/dtm_boxes.DtmGrpcService/PublishEvents";
     
-    public string QueryPreparedPath { get; set; } = "/DtmApi/QueryPrepared";
+    public string QueryPreparedPath { get; set; } = "/dtm_boxes_efcore.DtmEfCoreGrpcService/QueryPrepared";
 
     public string GetPublishEventsAddress()
     {
