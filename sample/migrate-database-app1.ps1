@@ -1,0 +1,1 @@
+dotnet run --project App1 --migrate-database
