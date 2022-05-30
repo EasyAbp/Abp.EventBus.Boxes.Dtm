@@ -351,7 +351,6 @@ public class App1Module : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints(endpoints =>
         {
-            endpoints.MapGrpcService<EasyAbp.Abp.EventBus.Boxes.Dtm.Services.DtmEfCoreGrpcService>();
             endpoints.MapGrpcService<EasyAbp.Abp.EventBus.Boxes.Dtm.Services.DtmGrpcService>();
         });
     }

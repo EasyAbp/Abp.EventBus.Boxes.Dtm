@@ -8,20 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DtmMongoBarrier" Version="$(DtmMongoBarrierVersion)" />
     <PackageReference Include="Volo.Abp.MongoDB" Version="$(AbpVersion)" />
     <ProjectReference Include="..\EasyAbp.Abp.EventBus.Boxes.Dtm\EasyAbp.Abp.EventBus.Boxes.Dtm.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Grpc.Tools" Version="2.45.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include=".\EasyAbp\Abp\EventBus\Boxes\Dtm\Protos\dtm_boxes_mongodb.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>
