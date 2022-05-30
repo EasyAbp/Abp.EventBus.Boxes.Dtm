@@ -18,7 +18,7 @@ using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
-public class DtmMessageManager : IDtmMessageManager, ITransientDependency
+public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 {
     protected ICurrentTenant CurrentTenant { get; }
     
@@ -40,7 +40,7 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
 
     protected AbpDtmGrpcOptions AbpDtmGrpcOptions { get; }
 
-    public DtmMessageManager(
+    public GrpcDtmMessageManager(
         ICurrentTenant currentTenant,
         IDtmMsgGidProvider gidProvider,
         IDtmTransFactory dtmTransFactory,
