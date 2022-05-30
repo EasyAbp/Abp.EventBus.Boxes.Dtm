@@ -3,13 +3,14 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Uow;
 
-namespace App1.Services;
+namespace App2.Services;
 
 public class EventAppService : ApplicationService
 {
     protected IDistributedEventBus DistributedEventBus { get; }
 
-    public EventAppService(IDistributedEventBus distributedEventBus)
+    public EventAppService(
+        IDistributedEventBus distributedEventBus)
     {
         DistributedEventBus = distributedEventBus;
     }
@@ -18,7 +19,7 @@ public class EventAppService : ApplicationService
     {
         await DistributedEventBus.PublishAsync(new TextMessageEto(message));
     }
-    
+
     [UnitOfWork(true)]
     public virtual async Task PublishInTransactionAsync(string message)
     {

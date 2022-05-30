@@ -13,44 +13,41 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
-using Volo.Abp.AuditLogging.EntityFrameworkCore;
+using Volo.Abp.AuditLogging.MongoDB;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
-using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.SqlServer;
 using Volo.Abp.FeatureManagement;
-using Volo.Abp.FeatureManagement.EntityFrameworkCore;
+using Volo.Abp.FeatureManagement.MongoDB;
 using Volo.Abp.Identity;
-using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.Identity.MongoDB;
 using Volo.Abp.Identity.Web;
-using Volo.Abp.IdentityServer.EntityFrameworkCore;
+using Volo.Abp.IdentityServer.MongoDB;
 using Volo.Abp.Localization;
 using Volo.Abp.Localization.ExceptionHandling;
 using Volo.Abp.Modularity;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.PermissionManagement;
-using Volo.Abp.PermissionManagement.EntityFrameworkCore;
+using Volo.Abp.PermissionManagement.MongoDB;
 using Volo.Abp.PermissionManagement.HttpApi;
 using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.PermissionManagement.IdentityServer;
 using Volo.Abp.SettingManagement;
-using Volo.Abp.SettingManagement.EntityFrameworkCore;
+using Volo.Abp.SettingManagement.MongoDB;
 using Volo.Abp.SettingManagement.Web;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.TenantManagement;
-using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Volo.Abp.TenantManagement.MongoDB;
 using Volo.Abp.TenantManagement.Web;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 using Volo.Abp.EventBus.Distributed;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
 using Volo.Abp.EventBus.RabbitMq;
-using Autofac.Core;
-using EasyAbp.Abp.EventBus.Boxes.Dtm;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.EfCore;
+using Volo.Abp.MongoDB;
+using Volo.Abp.Uow;
 
 namespace App2;
 
@@ -59,7 +56,7 @@ namespace App2;
     typeof(AbpAspNetCoreMvcModule),
     typeof(AbpAutofacModule),
     typeof(AbpAutoMapperModule),
-    typeof(AbpEntityFrameworkCoreSqlServerModule),
+    typeof(AbpMongoDbModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
     typeof(AbpAspNetCoreSerilogModule),
@@ -75,37 +72,37 @@ namespace App2;
     typeof(AbpPermissionManagementDomainIdentityServerModule),
     typeof(AbpIdentityApplicationModule),
     typeof(AbpIdentityHttpApiModule),
-    typeof(AbpIdentityEntityFrameworkCoreModule),
-    typeof(AbpIdentityServerEntityFrameworkCoreModule),
+    typeof(AbpIdentityMongoDbModule),
+    typeof(AbpIdentityServerMongoDbModule),
     typeof(AbpIdentityWebModule),
 
     // Audit logging module packages
-    typeof(AbpAuditLoggingEntityFrameworkCoreModule),
+    typeof(AbpAuditLoggingMongoDbModule),
 
     // Permission Management module packages
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpPermissionManagementHttpApiModule),
-    typeof(AbpPermissionManagementEntityFrameworkCoreModule),
+    typeof(AbpPermissionManagementMongoDbModule),
 
     // Tenant Management module packages
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpTenantManagementHttpApiModule),
-    typeof(AbpTenantManagementEntityFrameworkCoreModule),
+    typeof(AbpTenantManagementMongoDbModule),
     typeof(AbpTenantManagementWebModule),
 
     // Feature Management module packages
     typeof(AbpFeatureManagementApplicationModule),
-    typeof(AbpFeatureManagementEntityFrameworkCoreModule),
+    typeof(AbpFeatureManagementMongoDbModule),
     typeof(AbpFeatureManagementHttpApiModule),
     typeof(AbpFeatureManagementWebModule),
 
     // Setting Management module packages
     typeof(AbpSettingManagementApplicationModule),
-    typeof(AbpSettingManagementEntityFrameworkCoreModule),
+    typeof(AbpSettingManagementMongoDbModule),
     typeof(AbpSettingManagementHttpApiModule),
     typeof(AbpSettingManagementWebModule),
 
-    typeof(AbpEventBusBoxesDtmEntityFrameworkCoreModule),
+    typeof(AbpEventBusBoxesDtmMongoDbModule),
     typeof(AbpEventBusRabbitMqModule)
 )]
 public class App2Module : AbpModule
@@ -133,13 +130,13 @@ public class App2Module : AbpModule
             options.ActionApiToken = "1q2w3e";
             options.AppGrpcUrl = "localhost:54323";
             options.DtmGrpcUrl = "http://127.0.0.1:36790/";
-            options.BarrierTableName = "barrier";
+            options.BarrierTableName = "dtm_barrier";
         });
         Configure<AbpDistributedEventBusOptions>(options =>
         {
             options.Outboxes.Configure(config =>
             {
-                config.ImplementationType = typeof(IDtmDbContextEventOutbox<App2DbContext>);
+                config.ImplementationType = typeof(IDtmMongoDbContextEventOutbox<App2DbContext>);
             });
         });
         context.Services.AddGrpc();
@@ -154,7 +151,7 @@ public class App2Module : AbpModule
         ConfigureVirtualFiles(hostingEnvironment);
         ConfigureLocalization();
         ConfigureAuthentication(context.Services, configuration);
-        ConfigureEfCore(context);
+        ConfigureMongoDb(context);
     }
 
     private void ConfigureMultiTenancy()
@@ -291,23 +288,16 @@ public class App2Module : AbpModule
         });
     }
 
-    private void ConfigureEfCore(ServiceConfigurationContext context)
+    private void ConfigureMongoDb(ServiceConfigurationContext context)
     {
-        context.Services.AddAbpDbContext<App2DbContext>(options =>
+        context.Services.AddMongoDbContext<App2DbContext>(options =>
         {
-            /* You can remove "includeAllEntities: true" to create
-             * default repositories only for aggregate roots
-             * Documentation: https://docs.abp.io/en/abp/latest/Entity-Framework-Core#add-default-repositories
-             */
             options.AddDefaultRepositories(includeAllEntities: true);
         });
 
-        Configure<AbpDbContextOptions>(options =>
+        Configure<AbpUnitOfWorkDefaultOptions>(options =>
         {
-            options.Configure(configurationContext =>
-            {
-                configurationContext.UseSqlServer();
-            });
+            options.TransactionBehavior = UnitOfWorkTransactionBehavior.Disabled;
         });
     }
 
@@ -353,7 +343,7 @@ public class App2Module : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints(endpoints  =>
         {
-            endpoints.MapGrpcService<EasyAbp.Abp.EventBus.Boxes.Dtm.Services.DtmEfCoreGrpcService>();
+            endpoints.MapGrpcService<EasyAbp.Abp.EventBus.Boxes.Dtm.Services.DtmMongoDbGrpcService>();
             endpoints.MapGrpcService<EasyAbp.Abp.EventBus.Boxes.Dtm.Services.DtmGrpcService>();
         });
     }

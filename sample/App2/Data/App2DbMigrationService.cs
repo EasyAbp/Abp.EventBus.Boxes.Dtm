@@ -14,13 +14,13 @@ public class App2DbMigrationService : ITransientDependency
     public ILogger<App2DbMigrationService> Logger { get; set; }
 
     private readonly IDataSeeder _dataSeeder;
-    private readonly App2EFCoreDbSchemaMigrator _dbSchemaMigrator;
+    private readonly NullApp2DbSchemaMigrator _dbSchemaMigrator;
     private readonly ITenantRepository _tenantRepository;
     private readonly ICurrentTenant _currentTenant;
 
     public App2DbMigrationService(
         IDataSeeder dataSeeder,
-        App2EFCoreDbSchemaMigrator dbSchemaMigrator,
+        NullApp2DbSchemaMigrator dbSchemaMigrator,
         ITenantRepository tenantRepository,
         ICurrentTenant currentTenant)
     {
@@ -34,12 +34,12 @@ public class App2DbMigrationService : ITransientDependency
 
     public async Task MigrateAsync()
     {
-        var initialMigrationAdded = AddInitialMigrationIfNotExist();
-
-        if (initialMigrationAdded)
-        {
-            return;
-        }
+        // var initialMigrationAdded = AddInitialMigrationIfNotExist();
+        //
+        // if (initialMigrationAdded)
+        // {
+        //     return;
+        // }
 
         Logger.LogInformation("Started database migrations...");
 

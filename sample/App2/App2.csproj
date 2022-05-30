@@ -19,7 +19,7 @@
     <PackageReference Include="Volo.Abp.Swashbuckle" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="5.3.0-rc.2" />
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore.SqlServer" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.MongoDB" Version="5.3.0-rc.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,41 +32,41 @@
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.Identity.Application" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.Identity.HttpApi" Version="5.3.0-rc.2" />
-    <PackageReference Include="Volo.Abp.Identity.EntityFrameworkCore" Version="5.3.0-rc.2" />
-    <PackageReference Include="Volo.Abp.IdentityServer.EntityFrameworkCore" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.Identity.MongoDB" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.IdentityServer.MongoDB" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.Identity.Web" Version="5.3.0-rc.2" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.IdentityServer" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="5.3.0-rc.2" />
-    <PackageReference Include="Volo.Abp.PermissionManagement.EntityFrameworkCore" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.MongoDB" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi" Version="5.3.0-rc.2" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="5.3.0-rc.2" />
-    <PackageReference Include="Volo.Abp.TenantManagement.EntityFrameworkCore" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.TenantManagement.MongoDB" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.TenantManagement.HttpApi" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.TenantManagement.Web" Version="5.3.0-rc.2" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.Featuremanagement.Application" Version="5.3.0-rc.2" />
-    <PackageReference Include="Volo.Abp.Featuremanagement.EntityFrameworkCore" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.Featuremanagement.MongoDB" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.Featuremanagement.HttpApi" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.Featuremanagement.Web" Version="5.3.0-rc.2" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="5.3.0-rc.2" />
-    <PackageReference Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.SettingManagement.MongoDB" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="5.3.0-rc.2" />
     <PackageReference Include="Volo.Abp.SettingManagement.Web" Version="5.3.0-rc.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.AuditLogging.EntityFrameworkCore" Version="5.3.0-rc.2" />
+    <PackageReference Include="Volo.Abp.AuditLogging.MongoDB" Version="5.3.0-rc.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,13 +75,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>compile; contentFiles; build; buildMultitargeting; buildTransitive; analyzers; native</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -97,7 +90,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore\EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB\EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB.csproj" />
     <ProjectReference Include="..\App.Shared\App.Shared.csproj" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
   </ItemGroup>
