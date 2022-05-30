@@ -19,15 +19,17 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     public static string DefaultBarrierCollectionName { get; set; } = "dtm_barrier";
 
     protected AbpDtmEventBoxesOptions Options { get; }
-
     private ILogger<AbpMongoDbDtmMsgBarrierManager> Logger { get; }
+    protected IDtmMongoDbBarrierCollectionInitializer BarrierCollectionInitializer { get; }
 
     public AbpMongoDbDtmMsgBarrierManager(
         IOptions<AbpDtmEventBoxesOptions> options,
-        ILogger<AbpMongoDbDtmMsgBarrierManager> logger)
+        ILogger<AbpMongoDbDtmMsgBarrierManager> logger,
+        IDtmMongoDbBarrierCollectionInitializer barrierCollectionInitializer)
     {
         Options = options.Value;
         Logger = logger;
+        BarrierCollectionInitializer = barrierCollectionInitializer;
     }
 
     public override async Task InsertBarrierAsync(IAbpMongoDbContext dbContext, string gid)
@@ -106,6 +108,8 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     {
         var mongoCollection = GetMongoCollection(dbContext);
 
+        await BarrierCollectionInitializer.TryCreateIndexesAsync(mongoCollection);
+
         List<DtmBarrierDocument> res;
 
         try
@@ -144,7 +148,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
     public override async Task<bool> TryInvokeInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
     {
-        if (IsValidDatabaseApi<MongoDbDatabaseApi>(databaseApi))
+        if (!IsValidDatabaseApi<MongoDbDatabaseApi>(databaseApi))
         {
             return false;
         }

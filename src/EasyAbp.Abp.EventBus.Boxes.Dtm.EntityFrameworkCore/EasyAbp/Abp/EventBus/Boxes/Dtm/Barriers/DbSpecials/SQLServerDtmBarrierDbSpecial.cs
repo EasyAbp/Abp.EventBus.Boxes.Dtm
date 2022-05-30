@@ -51,7 +51,6 @@ IF OBJECT_ID(N'{tableFullName}',N'U') IS NULL
         WITH(IGNORE_DUP_KEY = ON)
     END
 ";
-        Console.WriteLine(sql);
         return sql;
     }
 }
