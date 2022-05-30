@@ -2,6 +2,7 @@
 using App2.Data;
 using App2.Localization;
 using App2.Menus;
+using EasyAbp.Abp.EventBus.Boxes.Dtm;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -102,6 +103,7 @@ namespace App2;
     typeof(AbpSettingManagementHttpApiModule),
     typeof(AbpSettingManagementWebModule),
 
+    typeof(AbpEventBusBoxesDtmGrpcModule),
     typeof(AbpEventBusBoxesDtmMongoDbModule),
     typeof(AbpEventBusRabbitMqModule)
 )]
@@ -124,14 +126,17 @@ public class App2Module : AbpModule
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
-
-        context.Services.AddDtmOutbox(options =>
+        
+        context.Services.AddDtmBoxes();
+        
+        context.Services.AddGrpc();
+        context.Services.AddAbpDtmGrpc(options =>
         {
             options.ActionApiToken = "1q2w3e";
-            options.AppGrpcUrl = "localhost:54323";
-            options.DtmGrpcUrl = "http://127.0.0.1:36790/";
-            options.BarrierTableName = "dtm_barrier";
+            options.AppGrpcUrl = "http://localhost:54323";
+            options.DtmGrpcUrl = "http://localhost:36790";
         });
+        
         Configure<AbpDistributedEventBusOptions>(options =>
         {
             options.Outboxes.Configure(config =>
@@ -139,7 +144,6 @@ public class App2Module : AbpModule
                 config.ImplementationType = typeof(IDtmMongoDbContextEventOutbox<App2DbContext>);
             });
         });
-        context.Services.AddGrpc();
 
         ConfigureMultiTenancy();
         ConfigureUrls(configuration);
@@ -343,7 +347,7 @@ public class App2Module : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints(endpoints  =>
         {
-            endpoints.MapGrpcService<EasyAbp.Abp.EventBus.Boxes.Dtm.Services.DtmGrpcService>();
+            endpoints.MapAbpDtmGrpcService();
         });
     }
 }

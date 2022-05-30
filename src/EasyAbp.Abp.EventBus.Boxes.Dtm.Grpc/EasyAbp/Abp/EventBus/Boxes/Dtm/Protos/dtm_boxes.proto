@@ -11,7 +11,7 @@ message DtmStyleResponse {
 
 message DtmMsgPublishEventsRequest {
   string ActionApiToken = 1;
-  bytes OutgoingEventInfoListToByteString = 2;
+  string OutgoingEventInfoListToByteString = 2;
 }
 
 message QueryPreparedRequest {

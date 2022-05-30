@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyAbp.Abp.EventBus.Boxes.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.EventBus.Boxes.Dtm.Installer", "src\EasyAbp.Abp.EventBus.Boxes.Dtm.Installer\EasyAbp.Abp.EventBus.Boxes.Dtm.Installer.csproj", "{BE39FD00-745B-4049-8161-FC129817CBE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc", "src\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc.csproj", "{A94FB25B-581E-4155-A863-A0CB0D6FD25F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{BE39FD00-745B-4049-8161-FC129817CBE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE39FD00-745B-4049-8161-FC129817CBE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE39FD00-745B-4049-8161-FC129817CBE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A94FB25B-581E-4155-A863-A0CB0D6FD25F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A94FB25B-581E-4155-A863-A0CB0D6FD25F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A94FB25B-581E-4155-A863-A0CB0D6FD25F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A94FB25B-581E-4155-A863-A0CB0D6FD25F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{527F645C-C1FC-406E-8479-81386C8ECF13} = {CCD2960C-23CC-4AB4-B84D-60C7AAA52F4D}
 		{D0AD9179-125C-40B2-A8EE-CD4C1EE24BB6} = {CCD2960C-23CC-4AB4-B84D-60C7AAA52F4D}
 		{BE39FD00-745B-4049-8161-FC129817CBE4} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
+		{A94FB25B-581E-4155-A863-A0CB0D6FD25F} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4324B3B4-B60B-4E3C-91D8-59576B4E26DD}

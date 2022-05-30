@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using DtmCommon;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;

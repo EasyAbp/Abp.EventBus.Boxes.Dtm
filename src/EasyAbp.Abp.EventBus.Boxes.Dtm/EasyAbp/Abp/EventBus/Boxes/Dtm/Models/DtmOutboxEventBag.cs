@@ -10,12 +10,12 @@ public class DtmOutboxEventBag
     /// DTM message for non-transactional distributed events.
     /// </summary>
     [CanBeNull]
-    public DtmMessageInfoModel DefaultMessage { get; internal set; }
+    public IDtmMessageInfoModel DefaultMessage { get; set; }
 
     /// <summary>
     /// DTM message for each transaction. Mapping from transaction objects to message models.
     /// </summary>
-    public Dictionary<object, DtmMessageInfoModel> TransMessages { get; } = new();
+    public Dictionary<object, IDtmMessageInfoModel> TransMessages { get; } = new();
 
     public bool HasAnyEvent()
     {

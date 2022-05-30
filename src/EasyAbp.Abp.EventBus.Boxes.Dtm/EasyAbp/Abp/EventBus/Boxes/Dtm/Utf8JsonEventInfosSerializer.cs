@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Text;
-using Google.Protobuf;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Json;
@@ -16,13 +15,14 @@ public class Utf8JsonEventInfosSerializer : IEventInfosSerializer, ITransientDep
         _jsonSerializer = jsonSerializer;
     }
 
-    public virtual ByteString Serialize(List<OutgoingEventInfo> eventInfos)
+    public virtual string Serialize(List<OutgoingEventInfo> eventInfos)
     {
-        return ByteString.CopyFrom(Encoding.UTF8.GetBytes(_jsonSerializer.Serialize(eventInfos)));
+        return Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(_jsonSerializer.Serialize(eventInfos)));
     }
 
-    public virtual List<OutgoingEventInfo> Deserialize(ByteString byteString)
+    public virtual List<OutgoingEventInfo> Deserialize(string byteString)
     {
-        return _jsonSerializer.Deserialize<List<OutgoingEventInfo>>(byteString.ToStringUtf8());
+        return _jsonSerializer.Deserialize<List<OutgoingEventInfo>>(
+            Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(byteString)));
     }
 }

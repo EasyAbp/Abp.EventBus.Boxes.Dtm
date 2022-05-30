@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Shared", "App.Shared\Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB", "..\src\EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB\EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB.csproj", "{B40E0C3B-FFCC-46A7-95A9-AA838AB603C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc", "..\src\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc.csproj", "{622EE350-4E0D-4F92-8157-2240B095ACB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{B40E0C3B-FFCC-46A7-95A9-AA838AB603C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B40E0C3B-FFCC-46A7-95A9-AA838AB603C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B40E0C3B-FFCC-46A7-95A9-AA838AB603C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{622EE350-4E0D-4F92-8157-2240B095ACB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{622EE350-4E0D-4F92-8157-2240B095ACB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{622EE350-4E0D-4F92-8157-2240B095ACB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{622EE350-4E0D-4F92-8157-2240B095ACB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{5CC0E0F3-2AB1-49B1-B834-F0F591076D4F} = {668182EB-E0BD-45CB-B27D-33440C8719D1}
 		{D19315D6-F2AE-4F3B-826C-2C127E7113F0} = {668182EB-E0BD-45CB-B27D-33440C8719D1}
 		{B40E0C3B-FFCC-46A7-95A9-AA838AB603C6} = {668182EB-E0BD-45CB-B27D-33440C8719D1}
+		{622EE350-4E0D-4F92-8157-2240B095ACB5} = {668182EB-E0BD-45CB-B27D-33440C8719D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63E2660C-C1D9-4768-90FD-289F36581842}

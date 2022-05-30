@@ -7,9 +7,9 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
 public class DefaultActionApiTokenChecker : IActionApiTokenChecker, ITransientDependency
 {
-    private readonly AbpDtmEventBoxesOptions _options;
+    private readonly AbpDtmGrpcOptions _options;
 
-    public DefaultActionApiTokenChecker(IOptions<AbpDtmEventBoxesOptions> options)
+    public DefaultActionApiTokenChecker(IOptions<AbpDtmGrpcOptions> options)
     {
         _options = options.Value;
     }

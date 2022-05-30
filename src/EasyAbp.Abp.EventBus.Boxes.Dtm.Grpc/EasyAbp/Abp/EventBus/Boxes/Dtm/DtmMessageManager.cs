@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtmgrpc;
@@ -37,7 +38,7 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
     
     protected IConnectionStringResolver ConnectionStringResolver { get; }
 
-    protected AbpDtmEventBoxesOptions AbpDtmEventBoxesOptions { get; }
+    protected AbpDtmGrpcOptions AbpDtmGrpcOptions { get; }
 
     public DtmMessageManager(
         ICurrentTenant currentTenant,
@@ -49,7 +50,7 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
         IEventInfosSerializer eventInfosSerializer,
         IConnectionStringHasher connectionStringHasher,
         IConnectionStringResolver connectionStringResolver,
-        IOptions<AbpDtmEventBoxesOptions> dtmOutboxOptions)
+        IOptions<AbpDtmGrpcOptions> abpDtmGrpcOptions)
     {
         CurrentTenant = currentTenant;
         GidProvider = gidProvider;
@@ -60,7 +61,7 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
         EventInfosSerializer = eventInfosSerializer;
         ConnectionStringHasher = connectionStringHasher;
         ConnectionStringResolver = connectionStringResolver;
-        AbpDtmEventBoxesOptions = dtmOutboxOptions.Value;
+        AbpDtmGrpcOptions = abpDtmGrpcOptions.Value;
     }
 
     public virtual async Task AddEventAsync(DtmOutboxEventBag eventBag, object dbContext, string connectionString,
@@ -93,16 +94,18 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
     {
         if (eventBag.DefaultMessage is not null)
         {
-            await eventBag.DefaultMessage.DtmMessage.Submit(cancellationToken);
+            var message = eventBag.DefaultMessage.DtmMessage as MsgGrpc;
+            await message!.Submit(cancellationToken);
         }
 
         foreach (var model in eventBag.TransMessages.Values)
         {
-            await model.DtmMessage.Submit(cancellationToken);
+            var message = model.DtmMessage as MsgGrpc;
+            await message!.Submit(cancellationToken);
         }
     }
 
-    protected virtual DtmMessageInfoModel GetOrCreateDtmMessageInfoModel(DtmOutboxEventBag eventBag,
+    protected virtual IDtmMessageInfoModel GetOrCreateDtmMessageInfoModel(DtmOutboxEventBag eventBag,
         [CanBeNull] object transObj, Type dbContextType, string hashedConnectionString)
     {
         if (transObj is null)
@@ -115,21 +118,22 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
             _ => CreateDtmMessageInfoModel(dbContextType, hashedConnectionString));
     }
 
-    protected virtual DtmMessageInfoModel CreateDtmMessageInfoModel(Type dbContextType, string hashedConnectionString)
+    protected virtual IDtmMessageInfoModel CreateDtmMessageInfoModel(Type dbContextType, string hashedConnectionString)
     {
         var gid = GidProvider.Create();
 
-        return new DtmMessageInfoModel(gid, DtmTransFactory.NewMsgGrpc(gid),
+        return new DtmGrpcMessageInfoModel(gid, DtmTransFactory.NewMsgGrpc(gid),
             new DbConnectionLookupInfoModel(dbContextType, CurrentTenant.Id, hashedConnectionString));
     }
 
     protected virtual Task AddEventsPublishingActionAsync(DtmOutboxEventBag eventBag)
     {
-        eventBag.DefaultMessage?.AddEventsPublishingAction(AbpDtmEventBoxesOptions, EventInfosSerializer);
+        var defaultMessage = eventBag.DefaultMessage as DtmGrpcMessageInfoModel;
+        defaultMessage?.AddEventsPublishingAction(AbpDtmGrpcOptions, EventInfosSerializer);
 
-        foreach (var model in eventBag.TransMessages.Values)
+        foreach (var message in eventBag.TransMessages.Values.Select(model => model as DtmGrpcMessageInfoModel))
         {
-            model.AddEventsPublishingAction(AbpDtmEventBoxesOptions, EventInfosSerializer);
+            message!.AddEventsPublishingAction(AbpDtmGrpcOptions, EventInfosSerializer);
         }
 
         return Task.CompletedTask;
@@ -139,7 +143,8 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
     {
         foreach (var model in eventBag.TransMessages.Values)
         {
-            await model.DtmMessage.Prepare(GenerateQueryPreparedAddress(model));
+            var message = model.DtmMessage as MsgGrpc;
+            await message!.Prepare(GenerateQueryPreparedAddress(model));
         }
     }
 
@@ -183,9 +188,9 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
         return databaseApi;
     }
 
-    protected virtual string GenerateQueryPreparedAddress(DtmMessageInfoModel model)
+    protected virtual string GenerateQueryPreparedAddress(IDtmMessageInfoModel model)
     {
-        var baseUrl = AbpDtmEventBoxesOptions.GetQueryPreparedAddress();
+        var baseUrl = AbpDtmGrpcOptions.GetQueryPreparedAddress();
 
         var extraParams =
             $"Info.DbContext={model.DbConnectionLookupInfo.DbContextType.FullName}&Info.TenantId={model.DbConnectionLookupInfo.TenantId}&Info.HashedConnectionString={model.DbConnectionLookupInfo.HashedConnectionString}";
