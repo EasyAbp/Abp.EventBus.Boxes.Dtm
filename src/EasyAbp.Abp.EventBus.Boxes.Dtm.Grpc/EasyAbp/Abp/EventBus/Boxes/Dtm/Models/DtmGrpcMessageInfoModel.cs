@@ -20,7 +20,7 @@ public class DtmGrpcMessageInfoModel : IDtmMessageInfoModel
 
     public List<OutgoingEventInfo> EventInfos { get; set; } = new();
 
-    public DtmGrpcMessageInfoModel(string gid, object dtmMessage,
+    public DtmGrpcMessageInfoModel(string gid, [NotNull] object dtmMessage,
         [NotNull] DbConnectionLookupInfoModel dbConnectionLookupInfo)
     {
         Gid = gid;

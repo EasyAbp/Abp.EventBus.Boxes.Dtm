@@ -80,13 +80,13 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
     {
         await AddEventsPublishingActionAsync(eventBag);
 
-        // WARNING:
-        // the defaultMsg (with non-transactional events) will not invoke DTM's Prepare and not create a barrier.
-        // That means when the DTM crashes, non-transactional events will never publish.
-        // To avoid this problem, please KEEP USING TRANSACTION if you need write-operations.
-        
         await PrepareTransMessagesAsync(eventBag);
 
+        // WARNING:
+        // the defaultMsg (with non-transactional UOW) will not create a barrier.
+        // That means when the DTM crashes after answering the Prepare API,
+        // events of the non-transactional UOW will never publish!
+        // To avoid this problem, please KEEP USING TRANSACTION if you need write-operations.
         await InsertTransMessagesBarriersAsync(eventBag);
     }
 
@@ -141,6 +141,12 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
     protected virtual async Task PrepareTransMessagesAsync(DtmOutboxEventBag eventBag)
     {
+        if (eventBag.DefaultMessage is not null)
+        {
+            var defaultMessage = eventBag.DefaultMessage.DtmMessage as MsgGrpc;
+            await defaultMessage!.Prepare(GenerateQueryPreparedAddress(eventBag.DefaultMessage))!;
+        }
+
         foreach (var model in eventBag.TransMessages.Values)
         {
             var message = model.DtmMessage as MsgGrpc;
