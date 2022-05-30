@@ -150,10 +150,22 @@ public class DtmMessageManager : IDtmMessageManager, ITransientDependency
             var barrierManagers = ServiceProvider.GetServices<IDtmMsgBarrierManager>();
 
             var databaseApi = await GetDatabaseApiAsync(model.DbConnectionLookupInfo.DbContextType);
+
+            var inserted = false;
             
             foreach (var barrierManager in barrierManagers)
             {
-                await barrierManager.TryInvokeInsertBarrierAsync(databaseApi, DtmMsgGidProvider.Create());
+                if (await barrierManager.TryInvokeInsertBarrierAsync(databaseApi, DtmMsgGidProvider.Create()))
+                {
+                    inserted = true;
+                    break;
+                }
+            }
+
+            if (!inserted)
+            {
+                throw new ApplicationException(
+                    $"No match DTM message barrier manager to {model.DbConnectionLookupInfo.DbContextType.Name}.");
             }
         }
     }
