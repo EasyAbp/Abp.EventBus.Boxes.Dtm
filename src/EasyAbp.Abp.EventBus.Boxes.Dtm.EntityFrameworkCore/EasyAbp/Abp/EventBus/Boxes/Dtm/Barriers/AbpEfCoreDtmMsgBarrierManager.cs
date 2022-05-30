@@ -63,8 +63,10 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
 
         try
         {
+            var special = BarrierSqlTemplates.DbProviderSpecialMapping.GetOrDefault(dbContext.Database.ProviderName);
+
             var reason = await dbContext.Database.GetDbConnection().QueryFirstOrDefaultAsync<string>(
-                string.Format(BarrierSqlTemplates.QueryPreparedSqlFormat, Options.BarrierTableName),
+                special.GetQueryPreparedSql(Options.BarrierTableName),
                 new
                 {
                     gid, branch_id = Constant.Barrier.MSG_BRANCHID, op = Constant.TYPE_MSG,
@@ -85,14 +87,10 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         return string.Empty;
     }
 
-    protected virtual async Task<int> InternalInsertBarrierAsync(IEfCoreDbContext dbContext, string gid,
-        string reason)
+    protected virtual async Task<int> InternalInsertBarrierAsync(IEfCoreDbContext dbContext, string gid, string reason)
     {
         await BarrierTableInitializer.TryCreateTableAsync(dbContext);
         
-        var tableAndValues = string.Format(BarrierSqlTemplates.DtmBarrierTableAndValueSqlFormat,
-            Options.BarrierTableName);
-
         var special = BarrierSqlTemplates.DbProviderSpecialMapping.GetOrDefault(dbContext.Database.ProviderName);
 
         if (special is null)
@@ -101,7 +99,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
                 $"Database provider {dbContext.Database.ProviderName} is not supported by the event boxes!");
         }
         
-        var sql = special.GetInsertIgnoreTemplate(tableAndValues, Constant.Barrier.PG_CONSTRAINT);
+        var sql = special.GetInsertIgnoreTemplate(Options.BarrierTableName);
 
         sql = special.GetPlaceHoldSQL(sql);
 

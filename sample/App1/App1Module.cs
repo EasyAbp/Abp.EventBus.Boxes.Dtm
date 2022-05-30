@@ -131,7 +131,7 @@ public class App1Module : AbpModule
             options.ActionApiToken = "1q2w3e";
             options.AppGrpcUrl = "localhost:54358";
             options.DtmGrpcUrl = "http://127.0.0.1:36790/";
-            options.BarrierTableName = "barrier";
+            // options.BarrierTableName = "barrier";
         });
         Configure<AbpDistributedEventBusOptions>(options =>
         {

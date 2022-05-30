@@ -8,6 +8,12 @@ public class SQLServerDtmBarrierDbSpecial : SqlServerDBSpecial, IDtmBarrierDbSpe
 {
     public static string DefaultBarrierTableName { get; set; } = "dtm.Barrier";
     
+    public static string DtmBarrierTableAndValueSqlFormat { get; set; } =
+        "{0} (trans_type, gid, branch_id, op, barrier_id, reason) values (@trans_type,@gid,@branch_id,@op,@barrier_id,@reason)";
+    
+    public static string QueryPreparedSqlFormat { get; set; } =
+        "select reason from \"{0}\" where gid=@gid and branch_id=@branch_id and op=@op and barrier_id=@barrier_id";
+    
     public virtual string GetCreateBarrierTableSql(AbpDtmEventBoxesOptions options)
     {
         var configuredTableName = options.BarrierTableName ?? DefaultBarrierTableName;
@@ -22,35 +28,47 @@ public class SQLServerDtmBarrierDbSpecial : SqlServerDBSpecial, IDtmBarrierDbSpe
         if (schemaName is not null)
         {
             sql += $@"
-IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{schemaName}')
-    BEGIN
-	    EXEC('CREATE SCHEMA [{schemaName}]')
-    END
-
+IF NOT EXISTS (SELECT
+    *
+  FROM sys.schemas
+  WHERE name = '{schemaName}')
+BEGIN
+  EXEC ('CREATE SCHEMA [{schemaName}]');
+END;
 ";
         }
         
         sql += $@"
-IF OBJECT_ID(N'{tableFullName}',N'U') IS NULL
-    BEGIN
-        CREATE TABLE {tableFullName}
-        (
-           [id] bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
-           [trans_type] varchar(45) NOT NULL DEFAULT(''),
-           [gid] varchar(128) NOT NULL DEFAULT(''),
-           [branch_id] varchar(128) NOT NULL DEFAULT(''),
-           [op] varchar(45) NOT NULL DEFAULT(''),
-           [barrier_id] varchar(45) NOT NULL DEFAULT(''),
-           [reason] varchar(45) NOT NULL DEFAULT(''),
-           [create_time] datetime NOT NULL DEFAULT(getdate()) ,
-           [update_time] datetime NOT NULL DEFAULT(getdate())
-        )
+IF OBJECT_ID(N'{tableFullName}', N'U') IS NULL
+BEGIN
+  CREATE TABLE {tableFullName} (
+    [id] bigint NOT NULL IDENTITY (1, 1) PRIMARY KEY,
+    [trans_type] varchar(45) NOT NULL DEFAULT (''),
+    [gid] varchar(128) NOT NULL DEFAULT (''),
+    [branch_id] varchar(128) NOT NULL DEFAULT (''),
+    [op] varchar(45) NOT NULL DEFAULT (''),
+    [barrier_id] varchar(45) NOT NULL DEFAULT (''),
+    [reason] varchar(45) NOT NULL DEFAULT (''),
+    [create_time] datetime NOT NULL DEFAULT (GETDATE()),
+    [update_time] datetime NOT NULL DEFAULT (GETDATE())
+  );
 
-        CREATE UNIQUE INDEX[ix_uniq_barrier] ON {tableFullName}
-               ([gid] ASC, [branch_id] ASC, [op] ASC, [barrier_id] ASC)
-        WITH(IGNORE_DUP_KEY = ON)
-    END
+  CREATE UNIQUE INDEX [ix_uniq_barrier] ON {tableFullName}
+  ([gid] ASC, [branch_id] ASC, [op] ASC, [barrier_id] ASC)
+  WITH (IGNORE_DUP_KEY = ON);
+END;
 ";
         return sql;
+    }
+
+    public virtual string GetInsertIgnoreTemplate(string tableName)
+    {
+        return base.GetInsertIgnoreTemplate(
+            string.Format(DtmBarrierTableAndValueSqlFormat, tableName ?? DefaultBarrierTableName), null);
+    }
+
+    public virtual string GetQueryPreparedSql(string tableName)
+    {
+        return string.Format(QueryPreparedSqlFormat, tableName ?? DefaultBarrierTableName);
     }
 }

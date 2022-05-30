@@ -7,6 +7,12 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers.DbSpecials;
 public class MySQLDtmBarrierDbSpecial : MysqlDBSpecial, IDtmBarrierDbSpecial
 {
     public static string DefaultBarrierTableName { get; set; } = "dtm_barrier";
+
+    public static string DtmBarrierTableAndValueSqlFormat { get; set; } =
+        "{0}(trans_type, gid, branch_id, op, barrier_id, reason) values(@trans_type,@gid,@branch_id,@op,@barrier_id,@reason)";
+    
+    public static string QueryPreparedSqlFormat { get; set; } =
+        "select reason from {0} where gid=@gid and branch_id=@branch_id and op=@op and barrier_id=@barrier_id";
     
     public virtual string GetCreateBarrierTableSql(AbpDtmEventBoxesOptions options)
     {
@@ -45,5 +51,16 @@ create table if not exists {tableFullName}(
 );
 ";
         return sql;
+    }
+    
+    public virtual string GetInsertIgnoreTemplate(string tableName)
+    {
+        return base.GetInsertIgnoreTemplate(
+            string.Format(DtmBarrierTableAndValueSqlFormat, tableName ?? DefaultBarrierTableName), null);
+    }
+
+    public virtual string GetQueryPreparedSql(string tableName)
+    {
+        return string.Format(QueryPreparedSqlFormat, tableName ?? DefaultBarrierTableName);
     }
 }

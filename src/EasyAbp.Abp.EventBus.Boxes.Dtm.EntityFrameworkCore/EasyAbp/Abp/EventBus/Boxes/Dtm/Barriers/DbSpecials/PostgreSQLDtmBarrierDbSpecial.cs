@@ -9,6 +9,12 @@ public class PostgreSQLDtmBarrierDbSpecial : PostgresDBSpecial, IDtmBarrierDbSpe
     public static string DefaultBarrierTableName { get; set; } = "dtm.barrier";
     public static string DtmSequenceName { get; set; } = "barrier_seq";
     
+    public static string DtmBarrierTableAndValueSqlFormat { get; set; } =
+        "\"{0}\"(trans_type, gid, branch_id, op, barrier_id, reason) values(@trans_type,@gid,@branch_id,@op,@barrier_id,@reason)";
+    
+    public static string QueryPreparedSqlFormat { get; set; } =
+        "select reason from \"{0}\" where gid=@gid and branch_id=@branch_id and op=@op and barrier_id=@barrier_id";
+    
     public virtual string GetCreateBarrierTableSql(AbpDtmEventBoxesOptions options)
     {
         var configuredTableName = options.BarrierTableName ?? DefaultBarrierTableName;
@@ -25,14 +31,14 @@ public class PostgreSQLDtmBarrierDbSpecial : PostgresDBSpecial, IDtmBarrierDbSpe
         if (schemaName is not null)
         {
             sql += $@"
-create schema if not exists {schemaName};
+create schema if not exists ""{schemaName}"";
 ";
         }
         
         sql += $@"
-CREATE SEQUENCE if not EXISTS {sequenceFullName};
-create table if not exists {tableFullName}(
-  id bigint NOT NULL DEFAULT NEXTVAL ('{sequenceFullName}'),
+CREATE SEQUENCE if not EXISTS ""{sequenceFullName}"";
+create table if not exists ""{tableFullName}""(
+  id bigint NOT NULL DEFAULT NEXTVAL (""{sequenceFullName}""),
   trans_type varchar(45) default '',
   gid varchar(128) default '',
   branch_id varchar(128) default '',
@@ -46,5 +52,17 @@ create table if not exists {tableFullName}(
 );
 ";
         return sql;
+    }
+    
+    public virtual string GetInsertIgnoreTemplate(string tableName)
+    {
+        return base.GetInsertIgnoreTemplate(
+            string.Format(DtmBarrierTableAndValueSqlFormat, tableName ?? DefaultBarrierTableName),
+            Constant.Barrier.PG_CONSTRAINT);
+    }
+
+    public virtual string GetQueryPreparedSql(string tableName)
+    {
+        return string.Format(QueryPreparedSqlFormat, tableName ?? DefaultBarrierTableName);
     }
 }
