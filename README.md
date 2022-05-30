@@ -1,4 +1,11 @@
 # Abp.EventBus.Boxes.Dtm
+
+[![ABP version](https://img.shields.io/badge/dynamic/xml?style=flat-square&color=yellow&label=abp&query=%2F%2FProject%2FPropertyGroup%2FAbpVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2FEasyAbp%2FAbp.EventBus.Boxes.Dtm%2Fmain%2FDirectory.Build.props)](https://abp.io)
+[![NuGet](https://img.shields.io/nuget/v/EasyAbp.Abp.EventBus.Boxes.Dtm.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.EventBus.Boxes.Dtm)
+[![NuGet Download](https://img.shields.io/nuget/dt/EasyAbp.Abp.EventBus.Boxes.Dtm.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.EventBus.Boxes.Dtm)
+[![Discord online](https://badgen.net/discord/online-members/S6QaezrCRq?label=Discord)](https://discord.gg/S6QaezrCRq)
+[![GitHub stars](https://img.shields.io/github/stars/EasyAbp/Abp.EventBus.Boxes.Dtm?style=social)](https://www.github.com/EasyAbp/Abp.EventBus.Boxes.Dtm)
+
 The [DTM](https://github.com/dtm-labs/dtm) implementation module of ABP distributed event boxes.
 
 ## Introduction
@@ -14,7 +21,7 @@ You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which help t
 | Timeliness                                   	| :heavy_check_mark:        	| :x:                    	|
 | Less data transfer                           	| :x:                       	| :heavy_check_mark:     	|
 | Eventual consistency (transactional UOW)     	| :heavy_check_mark:        	| :heavy_check_mark:     	|
-| Eventual consistency (non-transactional UOW) 	| :x:                       	| :heavy_check_mark:     	|
+| Eventual consistency (non-transactional UOW) 	| :x:                       	| :x:                    	|
 | Native idempotency                           	| :heavy_check_mark:        	| :heavy_check_mark:     	|
 | Multi-tenant-database support                	| :heavy_check_mark:        	| :x:                    	|
 | No additional external infrastructure        	| :x:                       	| :heavy_check_mark:     	|
@@ -64,11 +71,38 @@ Todo.
 
 ## Installation
 
-Todo.
+1. Install the following NuGet packages. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/docs/How-To.md#add-nuget-packages))
 
-## Usage
+    * EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc
+    * EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFramework
+    * EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB
 
-Todo.
+1. Add `DependsOn(typeof(AbpEventBusBoxesDtmXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/docs/How-To.md#add-module-dependencies))
+
+1. Configure the module and gRPC.
+```CSharp
+public override void ConfigureServices(ServiceConfigurationContext context)
+{
+    // Use `AddDtmOutbox` and `AddDtmInbox` separately if you only need one of them.
+    context.Services.AddDtmBoxes();
+
+    context.Services.AddGrpc();
+    context.Services.AddAbpDtmGrpc(options =>
+    {
+        options.ActionApiToken = "1q2w3e";  // DTM Server invokes app's action APIs with this token for authorization.
+        options.AppGrpcUrl = "http://127.0.0.1:54358";  // Base URL for DTM Server to invoke the current app. Only HTTP now!
+        options.DtmGrpcUrl = "http://127.0.0.1:36790";  // Base URL for the current app to invoke DTM Server.
+    });
+}
+
+public override void OnApplicationInitialization(ApplicationInitializationContext context)
+{
+    app.UseConfiguredEndpoints(endpoints =>
+    {
+        endpoints.MapAbpDtmGrpcService();
+    });
+}
+```
 
 ## Roadmap
 
