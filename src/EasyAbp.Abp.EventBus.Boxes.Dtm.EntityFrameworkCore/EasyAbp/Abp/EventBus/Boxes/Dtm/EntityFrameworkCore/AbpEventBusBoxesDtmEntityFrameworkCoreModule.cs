@@ -1,4 +1,6 @@
-﻿using Volo.Abp.EntityFrameworkCore;
+﻿using EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore;
@@ -9,4 +11,8 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore;
 )]
 public class AbpEventBusBoxesDtmEntityFrameworkCoreModule : AbpModule
 {
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddTransient(typeof(IDtmDbContextEventOutbox<>), typeof(DtmDbContextEventOutbox<>));
+    }
 }

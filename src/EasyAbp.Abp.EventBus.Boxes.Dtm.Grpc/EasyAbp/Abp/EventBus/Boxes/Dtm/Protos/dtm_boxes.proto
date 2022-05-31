@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dtm_boxes;
+
+option csharp_namespace = "EasyAbp.Abp.EventBus.Boxes.Dtm";
+option go_package = "./dtm_boxes";
+
+import "google/protobuf/empty.proto";
+
+message DtmMsgPublishEventsRequest {
+  string OutgoingEventInfoListToByteString = 2;
+}
+
+service DtmGrpcService {
+  rpc PublishEvents(DtmMsgPublishEventsRequest) returns (google.protobuf.Empty) {}
+  rpc QueryPrepared(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+}

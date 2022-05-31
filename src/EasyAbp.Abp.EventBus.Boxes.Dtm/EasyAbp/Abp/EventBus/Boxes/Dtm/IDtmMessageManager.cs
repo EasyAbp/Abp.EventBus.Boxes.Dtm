@@ -1,0 +1,17 @@
+﻿using System.Threading;
+using System.Threading.Tasks;
+using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+using JetBrains.Annotations;
+using Volo.Abp.EventBus.Distributed;
+
+namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+
+public interface IDtmMessageManager
+{
+    Task AddEventAsync(DtmOutboxEventBag eventBag, object dbContext, [NotNull] string connectionString,
+        [CanBeNull] object transObj, OutgoingEventInfo eventInfo);
+
+    Task InsertBarriersAndPrepareAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default);
+
+    Task SubmitAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default);
+}

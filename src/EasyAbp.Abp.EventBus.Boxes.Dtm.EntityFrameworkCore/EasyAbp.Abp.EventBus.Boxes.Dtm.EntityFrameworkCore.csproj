@@ -12,8 +12,4 @@
     <ProjectReference Include="..\EasyAbp.Abp.EventBus.Boxes.Dtm\EasyAbp.Abp.EventBus.Boxes.Dtm.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EasyAbp\Abp\EventBus\Boxes\Dtm" />
-  </ItemGroup>
-
 </Project>

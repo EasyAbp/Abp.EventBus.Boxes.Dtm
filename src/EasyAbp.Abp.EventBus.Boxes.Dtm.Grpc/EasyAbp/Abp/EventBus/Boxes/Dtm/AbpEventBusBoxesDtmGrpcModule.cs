@@ -2,7 +2,9 @@
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
-[DependsOn()]
+[DependsOn(
+    typeof(AbpEventBusBoxesDtmModule)
+)]
 public class AbpEventBusBoxesDtmGrpcModule : AbpModule
 {
 }

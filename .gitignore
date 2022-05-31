@@ -260,3 +260,4 @@ host/EasyAbp.Abp.EventBus.Boxes.Dtm.Blazor.Server.Host/Logs/logs.txt
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*
+/sample/App2/appsettings.secrets.json

@@ -1,4 +1,6 @@
-﻿using Volo.Abp.Modularity;
+﻿using EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.Modularity;
 using Volo.Abp.MongoDB;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB;
@@ -9,4 +11,8 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB;
 )]
 public class AbpEventBusBoxesDtmMongoDbModule : AbpModule
 {
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddTransient(typeof(IDtmMongoDbContextEventOutbox<>), typeof(DtmMongoDbContextEventOutbox<>));
+    }
 }
