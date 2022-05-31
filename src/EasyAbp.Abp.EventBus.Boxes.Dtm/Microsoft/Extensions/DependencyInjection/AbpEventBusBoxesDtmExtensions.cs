@@ -36,9 +36,9 @@ public static class AbpEventBusBoxesDtmExtensions
     private static IServiceCollection AddDtmOutbox(this IServiceCollection services)
     {
         services.TryAddTransient<DtmUnitOfWork>();
-        services.TryAddTransient<NullOutboxSender>();
+        services.TryAddTransient<DtmOutboxSender>();
         services.Replace(ServiceDescriptor.Transient<IUnitOfWork, DtmUnitOfWork>());
-        services.Replace(ServiceDescriptor.Transient<IOutboxSender, NullOutboxSender>());
+        services.Replace(ServiceDescriptor.Transient<IOutboxSender, DtmOutboxSender>());
 
         return services;
     }
