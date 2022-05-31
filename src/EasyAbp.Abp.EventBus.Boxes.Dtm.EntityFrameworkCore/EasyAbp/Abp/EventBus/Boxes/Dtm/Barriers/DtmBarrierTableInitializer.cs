@@ -10,20 +10,24 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 
 public class DtmBarrierTableInitializer : IDtmBarrierTableInitializer, ISingletonDependency
 {
+    protected IUnitOfWorkManager UnitOfWorkManager { get; }
     private ILogger<DtmBarrierTableInitializer> Logger { get; }
     private ConcurrentDictionary<string, bool> CreatedConnectionStrings { get; } = new();
     
     protected AbpDtmEventBoxesOptions Options { get; }
 
     public DtmBarrierTableInitializer(
+        IUnitOfWorkManager unitOfWorkManager,
         ILogger<DtmBarrierTableInitializer> logger,
         IOptions<AbpDtmEventBoxesOptions> options)
     {
+        UnitOfWorkManager = unitOfWorkManager;
         Logger = logger;
         Options = options.Value;
     }
@@ -53,6 +57,10 @@ public class DtmBarrierTableInitializer : IDtmBarrierTableInitializer, ISingleto
 
         await dbContext.Database.GetDbConnection().ExecuteAsync(sql, null, currentTransaction);
 
-        CreatedConnectionStrings[connectionString] = true;
+        UnitOfWorkManager.Current.OnCompleted(() =>
+        {
+            CreatedConnectionStrings[connectionString] = true;
+            return Task.CompletedTask;
+        });
     }
 }

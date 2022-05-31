@@ -6,20 +6,24 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 
 public class DtmMongoDbBarrierCollectionInitializer : IDtmMongoDbBarrierCollectionInitializer, ISingletonDependency
 {
+    protected IUnitOfWorkManager UnitOfWorkManager { get; }
     private ILogger<DtmMongoDbBarrierCollectionInitializer> Logger { get; }
     private ConcurrentDictionary<string, bool> CreatedServers { get; } = new();
     
     protected AbpDtmEventBoxesOptions Options { get; }
 
     public DtmMongoDbBarrierCollectionInitializer(
+        IUnitOfWorkManager unitOfWorkManager,
         ILogger<DtmMongoDbBarrierCollectionInitializer> logger,
         IOptions<AbpDtmEventBoxesOptions> options)
     {
+        UnitOfWorkManager = unitOfWorkManager;
         Logger = logger;
         Options = options.Value;
     }
@@ -42,7 +46,11 @@ public class DtmMongoDbBarrierCollectionInitializer : IDtmMongoDbBarrierCollecti
 
         foreach (var server in servers)
         {
-            CreatedServers[server] = true;
+            UnitOfWorkManager.Current.OnCompleted(() =>
+            {
+                CreatedServers[server] = true;
+                return Task.CompletedTask;
+            });
         }
     }
 }
