@@ -81,10 +81,23 @@ Todo.
 
 1. Add `DependsOn(typeof(AbpEventBusBoxesDtmXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/docs/How-To.md#add-module-dependencies))
 
-1. Configure the module and gRPC.
+1. Configure the boxes and gRPC.
 ```CSharp
 public override void ConfigureServices(ServiceConfigurationContext context)
 {
+    Configure<AbpDistributedEventBusOptions>(options =>
+    {
+        options.Outboxes.Configure(config =>
+        {
+            config.UseDbContextWithDtmOutbox<MyProjectDbContext>();
+        });
+
+        options.Inboxes.Configure(config =>
+        {
+            config.UseDbContextWithDtmInbox<MyProjectDbContext>();
+        });
+    });
+
     // Use `AddDtmOutbox` and `AddDtmInbox` separately if you only need one of them.
     context.Services.AddDtmBoxes();
 
