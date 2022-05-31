@@ -8,7 +8,7 @@ public interface IDtmMsgBarrierManager<in TDbContextInterface> : IDtmMsgBarrierM
 {
     Task InsertBarrierAsync(TDbContextInterface dbContext, [NotNull] string gid);
     
-    Task<string> QueryPreparedAsync(TDbContextInterface dbContext, [NotNull] string gid);
+    Task<bool> TryInsertBarrierAsRollbackAsync(TDbContextInterface dbContext, [NotNull] string gid);
 }
 
 public interface IDtmMsgBarrierManager

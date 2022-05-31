@@ -36,7 +36,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     {
         if (dbContext.SessionHandle is null)
         {
-            throw new DtmException("DTM barrier is for ABP transactional events.");
+            throw new ApplicationException("DTM barrier is for ABP transactional events.");
         }
 
         try
@@ -55,7 +55,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         }
     }
 
-    public override async Task<string> QueryPreparedAsync(IAbpMongoDbContext dbContext, string gid)
+    public override async Task<bool> TryInsertBarrierAsRollbackAsync(IAbpMongoDbContext dbContext, string gid)
     {
         try
         {
@@ -64,7 +64,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         catch (Exception e)
         {
             Logger?.LogWarning(e, "Insert Barrier error, gid={gid}", gid);
-            return e.Message;
+            throw;
         }
 
         try
@@ -80,16 +80,16 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
             if (res is { Count: > 0 } && res[0].Reason.Equals(Constant.Barrier.MSG_BARRIER_REASON))
             {
-                return Constant.ResultFailure;
+                return true;    // The "rollback" inserted succeed.
             }
         }
         catch (Exception ex)
         {
             Logger?.LogWarning(ex, "MongoDB Query Prepared error, gid={gid}", gid);
-            return ex.Message;
+            throw;
         }
 
-        return string.Empty;
+        return false;    // The "rollback" not inserted.
     }
 
     protected virtual IMongoCollection<DtmBarrierDocument> GetMongoCollection(IAbpMongoDbContext dbContext)

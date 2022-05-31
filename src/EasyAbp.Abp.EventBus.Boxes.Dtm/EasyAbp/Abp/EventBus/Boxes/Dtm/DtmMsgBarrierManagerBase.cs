@@ -15,5 +15,5 @@ public abstract class DtmMsgBarrierManagerBase<TDbContextInterface> : IDtmMsgBar
 
     public abstract Task InsertBarrierAsync(TDbContextInterface dbContext, string gid);
     
-    public abstract Task<string> QueryPreparedAsync(TDbContextInterface dbContext, string gid);
+    public abstract Task<bool> TryInsertBarrierAsRollbackAsync(TDbContextInterface dbContext, string gid);
 }

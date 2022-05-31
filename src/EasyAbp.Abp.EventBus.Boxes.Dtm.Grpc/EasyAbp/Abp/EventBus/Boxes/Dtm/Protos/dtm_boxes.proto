@@ -5,27 +5,13 @@ package dtm_boxes;
 option csharp_namespace = "EasyAbp.Abp.EventBus.Boxes.Dtm";
 option go_package = "./dtm_boxes";
 
-message DtmStyleResponse {
-  string dtm_result = 1;
-}
+import "google/protobuf/empty.proto";
 
 message DtmMsgPublishEventsRequest {
-  string ActionApiToken = 1;
   string OutgoingEventInfoListToByteString = 2;
 }
 
-message QueryPreparedRequest {
-  string ActionApiToken = 1;
-  DbConnectionLookupInfo Info = 2;
-}
-
-message DbConnectionLookupInfo {
-  string DbContext = 1;
-  string TenantId = 2;
-  string HashedConnectionString = 3;
-}
-
 service DtmGrpcService {
-  rpc PublishEvents(DtmMsgPublishEventsRequest) returns (DtmStyleResponse) {}
-  rpc QueryPrepared(QueryPreparedRequest) returns (DtmStyleResponse) {}
+  rpc PublishEvents(DtmMsgPublishEventsRequest) returns (google.protobuf.Empty) {}
+  rpc QueryPrepared(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }

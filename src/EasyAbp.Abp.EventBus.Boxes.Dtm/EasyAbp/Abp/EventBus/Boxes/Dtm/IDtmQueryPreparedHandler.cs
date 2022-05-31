@@ -8,6 +8,6 @@ public interface IDtmQueryPreparedHandler
 {
     Task<bool> CanHandleAsync([NotNull] string dbContextTypeName);
 
-    Task<string> QueryAsync([NotNull] string dbContextTypeName, [NotNull] string hashedConnectionString,
-        [NotNull] string gid);
+    Task<bool> TryInsertBarrierAsRollbackAsync([NotNull] string dbContextTypeName,
+        [NotNull] string hashedConnectionString, [NotNull] string gid);
 }

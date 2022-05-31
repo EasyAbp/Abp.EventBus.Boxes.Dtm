@@ -143,8 +143,17 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
     {
         foreach (var model in eventBag.TransMessages.Values)
         {
-            var message = model.DtmMessage as MsgGrpc;
-            await message!.Prepare(GenerateQueryPreparedAddress(model));
+            var message = (model.DtmMessage as MsgGrpc)!;
+
+            message.SetBranchHeaders(new Dictionary<string, string>
+            {
+                {DtmRequestHeaderNames.ActionApiToken, AbpDtmGrpcOptions.ActionApiToken},
+                {DtmRequestHeaderNames.DbContextType, model.DbConnectionLookupInfo.DbContextType.FullName},
+                {DtmRequestHeaderNames.TenantId, model.DbConnectionLookupInfo.TenantId.ToString()},
+                {DtmRequestHeaderNames.HashedConnectionString, model.DbConnectionLookupInfo.HashedConnectionString},
+            });
+            
+            await message.Prepare(AbpDtmGrpcOptions.GetQueryPreparedAddress());
         }
     }
 
@@ -186,15 +195,5 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         Check.NotNull(databaseApi, nameof(databaseApi));
 
         return databaseApi;
-    }
-
-    protected virtual string GenerateQueryPreparedAddress(IDtmMessageInfoModel model)
-    {
-        var baseUrl = AbpDtmGrpcOptions.GetQueryPreparedAddress();
-
-        var extraParams =
-            $"Info.DbContext={model.DbConnectionLookupInfo.DbContextType.FullName}&Info.TenantId={model.DbConnectionLookupInfo.TenantId}&Info.HashedConnectionString={model.DbConnectionLookupInfo.HashedConnectionString}";
-        
-        return baseUrl.Contains('?') ? $"{baseUrl.EnsureEndsWith('&')}{extraParams}" : $"{baseUrl}?{extraParams}";
     }
 }

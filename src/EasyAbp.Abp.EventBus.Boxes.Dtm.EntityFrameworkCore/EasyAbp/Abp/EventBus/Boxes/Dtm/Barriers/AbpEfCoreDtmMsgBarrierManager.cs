@@ -36,7 +36,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
     {
         if (dbContext.Database.CurrentTransaction is null)
         {
-            throw new DtmException("DTM barrier is for ABP transactional events.");
+            throw new ApplicationException("DTM barrier is for ABP transactional events.");
         }
 
         var affected = await InternalInsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG);
@@ -49,7 +49,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         }
     }
 
-    public override async Task<string> QueryPreparedAsync(IEfCoreDbContext dbContext, string gid)
+    public override async Task<bool> TryInsertBarrierAsRollbackAsync(IEfCoreDbContext dbContext, string gid)
     {
         try
         {
@@ -58,7 +58,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         catch (Exception e)
         {
             Logger?.LogWarning(e, "Insert Barrier error, gid={gid}", gid);
-            return e.Message;
+            throw;
         }
 
         try
@@ -75,16 +75,16 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
 
             if (reason.Equals(Constant.Barrier.MSG_BARRIER_REASON))
             {
-                return Constant.ResultFailure;
+                return true;    // The "rollback" inserted succeed.
             }
         }
         catch (Exception ex)
         {
             Logger?.LogWarning(ex, "Query Prepared error, gid={gid}", gid);
-            return ex.Message;
+            throw;
         }
 
-        return string.Empty;
+        return false;    // The "rollback" not inserted.
     }
 
     protected virtual async Task<int> InternalInsertBarrierAsync(IEfCoreDbContext dbContext, string gid, string reason)

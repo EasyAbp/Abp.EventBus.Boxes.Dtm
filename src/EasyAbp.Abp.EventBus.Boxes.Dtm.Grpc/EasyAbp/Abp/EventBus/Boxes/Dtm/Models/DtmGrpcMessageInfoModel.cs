@@ -37,7 +37,6 @@ public class DtmGrpcMessageInfoModel : IDtmMessageInfoModel
         
         ((MsgGrpc)DtmMessage).Add(abpDtmEventBoxesOptions.GetPublishEventsAddress(), new DtmMsgPublishEventsRequest
         {
-            ActionApiToken = abpDtmEventBoxesOptions.ActionApiToken,
             OutgoingEventInfoListToByteString = serializer.Serialize(EventInfos)
         });
 

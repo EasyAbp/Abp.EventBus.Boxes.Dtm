@@ -39,7 +39,7 @@ public class EfCoreDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransien
         );
     }
 
-    public virtual async Task<string> QueryAsync(string dbContextTypeName, string hashedConnectionString, string gid)
+    public virtual async Task<bool> TryInsertBarrierAsRollbackAsync(string dbContextTypeName, string hashedConnectionString, string gid)
     {
         var providerInfo = GetDbContextProviderInfoOrNull(dbContextTypeName) ??
                            throw new ApplicationException($"Can not resolve the DbContext type {dbContextTypeName}");
@@ -53,10 +53,10 @@ public class EfCoreDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransien
 
         if (await ConnectionStringHasher.HashAsync(connectionString) != hashedConnectionString)
         {
-            return Constant.ResultFailure;
+            throw new ApplicationException($"Query prepared with a wrong HashedConnectionString, gid: {gid}");
         }
         
-        return await BarrierManager.QueryPreparedAsync(dbContext, gid);
+        return await BarrierManager.TryInsertBarrierAsRollbackAsync(dbContext, gid);
     }
 
     protected virtual DbContextProviderInfo GetDbContextProviderInfoOrNull(string dbContextTypeName)
