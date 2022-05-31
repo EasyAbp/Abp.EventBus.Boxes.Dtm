@@ -14,11 +14,12 @@ public class EventAppService : ApplicationService
         DistributedEventBus = distributedEventBus;
     }
 
+    [UnitOfWork(false)]
     public virtual async Task PublishAsync(string message)
     {
         await DistributedEventBus.PublishAsync(new TextMessageEto(message));
     }
-    
+
     [UnitOfWork(true)]
     public virtual async Task PublishInTransactionAsync(string message)
     {

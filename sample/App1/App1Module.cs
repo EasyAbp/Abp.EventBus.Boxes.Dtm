@@ -129,15 +129,15 @@ public class App1Module : AbpModule
         var configuration = context.Services.GetConfiguration();
 
         context.Services.AddDtmBoxes();
-        
+
         context.Services.AddGrpc();
         context.Services.AddAbpDtmGrpc(options =>
         {
-            options.ActionApiToken = "1q2w3e";
-            options.AppGrpcUrl = "http://localhost:54358";
-            options.DtmGrpcUrl = "http://localhost:36790";
+            options.ActionApiToken = configuration["DTM:ActionApiToken"];
+            options.AppGrpcUrl = configuration["DTM:AppGrpcUrl"];
+            options.DtmGrpcUrl = configuration["DTM:DtmGrpcUrl"];
         });
-        
+
         Configure<AbpDistributedEventBusOptions>(options =>
         {
             options.Outboxes.Configure(config =>
@@ -273,6 +273,7 @@ public class App1Module : AbpModule
         services.AddAbpSwaggerGen(
             options =>
             {
+                options.HideAbpEndpoints();
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "App1 API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
@@ -341,7 +342,7 @@ public class App1Module : AbpModule
             app.UseMultiTenancy();
         }
 
-        app.UseUnitOfWork();
+        //app.UseUnitOfWork();
         app.UseIdentityServer();
         app.UseAuthorization();
 

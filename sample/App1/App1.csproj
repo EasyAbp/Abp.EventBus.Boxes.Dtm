@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <UserSecretsId>494b1a6e-f5ff-4586-8bcf-e406f6804bb2</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
