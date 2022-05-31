@@ -46,9 +46,9 @@ public class EfCoreDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransien
 
         var dbContextProvider = ServiceProvider.GetRequiredService(providerInfo.DbContextProviderType);
 
-        var dbContext =
-            await ((Task<IEfCoreDbContext>)providerInfo.GetDbContextAsyncMethodInfo.Invoke(dbContextProvider, null))!;
-        
+        dynamic task = providerInfo.GetDbContextAsyncMethodInfo.Invoke(dbContextProvider, null);
+        IEfCoreDbContext dbContext = await task!;
+
         var connectionString = await ConnectionStringResolver.ResolveAsync(providerInfo.DbContextType);
 
         if (await ConnectionStringHasher.HashAsync(connectionString) != hashedConnectionString)
@@ -68,7 +68,7 @@ public class EfCoreDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransien
         
         var dbContextType = Type.GetType(dbContextTypeName)!;
 
-        if (!dbContextType.IsAssignableFrom(typeof(IEfCoreDbContext)))
+        if (!dbContextType.IsAssignableTo(typeof(IEfCoreDbContext)))
         {
             return null;
         }

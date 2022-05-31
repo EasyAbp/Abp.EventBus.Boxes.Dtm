@@ -21,21 +21,21 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 {
     protected ICurrentTenant CurrentTenant { get; }
-    
+
     protected IDtmMsgGidProvider GidProvider { get; }
-    
+
     protected IDtmTransFactory DtmTransFactory { get; }
-    
+
     protected IServiceProvider ServiceProvider { get; }
-    
+
     protected IDtmMsgGidProvider DtmMsgGidProvider { get; }
-    
+
     protected IUnitOfWorkManager UnitOfWorkManager { get; }
 
     protected IEventInfosSerializer EventInfosSerializer { get; }
-    
+
     protected IConnectionStringHasher ConnectionStringHasher { get; }
-    
+
     protected IConnectionStringResolver ConnectionStringResolver { get; }
 
     protected AbpDtmGrpcOptions AbpDtmGrpcOptions { get; }
@@ -84,7 +84,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         // the defaultMsg (with non-transactional events) will not invoke DTM's Prepare and not create a barrier.
         // That means when the DTM crashes, non-transactional events will never publish.
         // To avoid this problem, please KEEP USING TRANSACTION if you need write-operations.
-        
+
         await PrepareTransMessagesAsync(eventBag);
 
         await InsertTransMessagesBarriersAsync(eventBag);
@@ -145,14 +145,16 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         {
             var message = (model.DtmMessage as MsgGrpc)!;
 
+            var dbContextType = $"{model.DbConnectionLookupInfo.DbContextType.FullName}, {model.DbConnectionLookupInfo.DbContextType.Assembly.GetName().Name}";
+
             message.SetBranchHeaders(new Dictionary<string, string>
             {
                 {DtmRequestHeaderNames.ActionApiToken, AbpDtmGrpcOptions.ActionApiToken},
-                {DtmRequestHeaderNames.DbContextType, model.DbConnectionLookupInfo.DbContextType.FullName},
+                {DtmRequestHeaderNames.DbContextType, dbContextType},
                 {DtmRequestHeaderNames.TenantId, model.DbConnectionLookupInfo.TenantId.ToString()},
                 {DtmRequestHeaderNames.HashedConnectionString, model.DbConnectionLookupInfo.HashedConnectionString},
             });
-            
+
             await message.Prepare(AbpDtmGrpcOptions.GetQueryPreparedAddress());
         }
     }
@@ -166,7 +168,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
             var databaseApi = await GetDatabaseApiAsync(model.DbConnectionLookupInfo.DbContextType);
 
             var inserted = false;
-            
+
             foreach (var barrierManager in barrierManagers)
             {
                 if (await barrierManager.TryInvokeInsertBarrierAsync(databaseApi, DtmMsgGidProvider.Create()))
@@ -187,11 +189,11 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
     protected virtual async Task<IDatabaseApi> GetDatabaseApiAsync(Type targetDbContextType)
     {
         var connectionString = await ConnectionStringResolver.ResolveAsync(targetDbContextType);
-     
+
         var databaseApiKey = $"{targetDbContextType.FullName}_{connectionString}";
 
         var databaseApi = UnitOfWorkManager.Current.FindDatabaseApi(databaseApiKey);
-        
+
         Check.NotNull(databaseApi, nameof(databaseApi));
 
         return databaseApi;

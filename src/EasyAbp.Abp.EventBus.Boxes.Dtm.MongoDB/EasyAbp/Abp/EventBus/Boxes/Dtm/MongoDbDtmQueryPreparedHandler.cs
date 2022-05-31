@@ -29,9 +29,9 @@ public class MongoDbDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransie
         BarrierManager = barrierManager;
         ConnectionStringResolver = connectionStringResolver;
     }
-    
+
     protected static ConcurrentDictionary<string, DbContextProviderInfo> CachedDbContextProviderInfo { get; } = new();
-    
+
     public virtual Task<bool> CanHandleAsync(string dbContextTypeName)
     {
         return Task.FromResult(
@@ -45,17 +45,17 @@ public class MongoDbDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransie
                            throw new ApplicationException($"Can not resolve the DbContext type {dbContextTypeName}");
 
         var dbContextProvider = ServiceProvider.GetRequiredService(providerInfo.DbContextProviderType);
-        
-        var dbContext =
-            await (Task<IAbpMongoDbContext>)providerInfo.GetDbContextAsyncMethodInfo.Invoke(dbContextProvider, null)!;
-        
+
+        dynamic task = providerInfo.GetDbContextAsyncMethodInfo.Invoke(dbContextProvider, null);
+        IAbpMongoDbContext dbContext = await task!;
+
         var connectionString = await ConnectionStringResolver.ResolveAsync(providerInfo.DbContextType);
 
         if (await ConnectionStringHasher.HashAsync(connectionString) != hashedConnectionString)
         {
             throw new ApplicationException($"Query prepared with a wrong HashedConnectionString, gid: {gid}");
         }
-        
+
         return await BarrierManager.TryInsertBarrierAsRollbackAsync(dbContext, gid);
     }
 
@@ -65,10 +65,10 @@ public class MongoDbDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransie
         {
             return CachedDbContextProviderInfo[dbContextTypeName];
         }
-        
+
         var dbContextType = Type.GetType(dbContextTypeName)!;
 
-        if (!dbContextType.IsAssignableFrom(typeof(IAbpMongoDbContext)))
+        if (!dbContextType.IsAssignableTo(typeof(IAbpMongoDbContext)))
         {
             return null;
         }

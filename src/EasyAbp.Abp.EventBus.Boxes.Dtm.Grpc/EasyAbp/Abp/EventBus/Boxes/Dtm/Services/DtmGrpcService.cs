@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Data;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MultiTenancy;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Services;
 
@@ -18,30 +19,33 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
     protected IDistributedEventBus DistributedEventBus { get; }
     protected IEventInfosSerializer EventInfosSerializer { get; }
     protected IActionApiTokenChecker ActionApiTokenChecker { get; }
+    protected IUnitOfWorkManager UnitOfWorkManager { get; }
 
     public DtmGrpcService(
         ICurrentTenant currentTenant,
         IServiceProvider serviceProvider,
         IDistributedEventBus distributedEventBus,
         IEventInfosSerializer eventInfosSerializer,
-        IActionApiTokenChecker actionApiTokenChecker)
+        IActionApiTokenChecker actionApiTokenChecker,
+        IUnitOfWorkManager unitOfWorkManager)
     {
         CurrentTenant = currentTenant;
         ServiceProvider = serviceProvider;
         DistributedEventBus = distributedEventBus;
         EventInfosSerializer = eventInfosSerializer;
         ActionApiTokenChecker = actionApiTokenChecker;
+        UnitOfWorkManager = unitOfWorkManager;
     }
-    
+
     public override async Task<Empty> PublishEvents(DtmMsgPublishEventsRequest request, ServerCallContext context)
     {
         await CheckActionApiTokenAsync(context);
-        
+
         if (DistributedEventBus is not ISupportsEventBoxes supportsEventBoxes)
         {
             throw new ApplicationException("Current distributed event bus does not support event boxes!");
         }
-        
+
         var eventInfos = EventInfosSerializer.Deserialize(request.OutgoingEventInfoListToByteString);
 
         await supportsEventBoxes.PublishManyFromOutboxAsync(eventInfos, new OutboxConfig("DTM_Empty"));
@@ -57,8 +61,9 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
                   throw new ApplicationException("Cannot get dtm-gid from the gRPC request headers.");
 
         var tenantIdString = context.RequestHeaders.GetValue(DtmRequestHeaderNames.TenantId);
-        var tenantId = tenantIdString is null ? (Guid?)null : Guid.Parse(tenantIdString);
+        var tenantId = tenantIdString.IsNullOrWhiteSpace() ? (Guid?)null : Guid.Parse(tenantIdString);
 
+        using var unitOfWork = UnitOfWorkManager.Begin(true);
         using var changeTenant = CurrentTenant.Change(tenantId);
 
         var dbContextTypeName = context.RequestHeaders.GetValue(DtmRequestHeaderNames.DbContextType);
@@ -77,6 +82,8 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
             {
                 throw new RpcException(new Status(StatusCode.Aborted, Constant.ResultFailure));
             }
+
+            await unitOfWork.CompleteAsync();
 
             return new Empty();
         }

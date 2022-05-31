@@ -12,7 +12,7 @@ public class SQLServerDtmBarrierDbSpecial : SqlServerDBSpecial, IDtmBarrierDbSpe
         "{0} (trans_type, gid, branch_id, op, barrier_id, reason) values (@trans_type,@gid,@branch_id,@op,@barrier_id,@reason)";
     
     public static string QueryPreparedSqlFormat { get; set; } =
-        "select reason from \"{0}\" where gid=@gid and branch_id=@branch_id and op=@op and barrier_id=@barrier_id";
+        "select reason from {0} where gid=@gid and branch_id=@branch_id and op=@op and barrier_id=@barrier_id";
     
     public virtual string GetCreateBarrierTableSql(AbpDtmEventBoxesOptions options)
     {

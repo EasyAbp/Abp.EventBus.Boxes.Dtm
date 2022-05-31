@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
@@ -10,7 +11,7 @@ public abstract class DtmMsgBarrierManagerBase<TDbContextInterface> : IDtmMsgBar
 
     protected virtual bool IsValidDatabaseApi<TDatabaseApi>(IDatabaseApi databaseApi) where TDatabaseApi : IDatabaseApi
     {
-        return databaseApi.GetType().IsAssignableFrom(typeof(TDatabaseApi));
+        return databaseApi.GetType().IsAssignableTo(typeof(TDatabaseApi));
     }
 
     public abstract Task InsertBarrierAsync(TDbContextInterface dbContext, string gid);
