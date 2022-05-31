@@ -176,7 +176,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
             if (!inserted)
             {
-                throw new ApplicationException(
+                throw new AbpException(
                     $"No match DTM message barrier manager to {model.DbConnectionLookupInfo.DbContextType.Name}.");
             }
         }

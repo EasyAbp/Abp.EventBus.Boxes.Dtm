@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using DtmCommon;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.MongoDB;
@@ -42,7 +42,7 @@ public class MongoDbDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransie
     public virtual async Task<bool> TryInsertBarrierAsRollbackAsync(string dbContextTypeName, string hashedConnectionString, string gid)
     {
         var providerInfo = GetDbContextProviderInfoOrNull(dbContextTypeName) ??
-                           throw new ApplicationException($"Can not resolve the DbContext type {dbContextTypeName}");
+                           throw new AbpException($"Can not resolve the DbContext type {dbContextTypeName}");
 
         var dbContextProvider = ServiceProvider.GetRequiredService(providerInfo.DbContextProviderType);
 
@@ -53,7 +53,7 @@ public class MongoDbDtmQueryPreparedHandler : IDtmQueryPreparedHandler, ITransie
 
         if (await ConnectionStringHasher.HashAsync(connectionString) != hashedConnectionString)
         {
-            throw new ApplicationException($"Query prepared with a wrong HashedConnectionString, gid: {gid}");
+            throw new AbpException($"Query prepared with a wrong HashedConnectionString, gid: {gid}");
         }
 
         return await BarrierManager.TryInsertBarrierAsRollbackAsync(dbContext, gid);

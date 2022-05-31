@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Dtmgrpc;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using JetBrains.Annotations;
+using Volo.Abp;
 using Volo.Abp.EventBus.Distributed;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
@@ -32,7 +32,7 @@ public class DtmGrpcMessageInfoModel : IDtmMessageInfoModel
     {
         if (EventsPublishingActionAdded)
         {
-            throw new ApplicationException("Duplicate events publishing action.");
+            throw new AbpException("Duplicate events publishing action.");
         }
         
         ((MsgGrpc)DtmMessage).Add(abpDtmEventBoxesOptions.GetPublishEventsAddress(), new DtmMsgPublishEventsRequest

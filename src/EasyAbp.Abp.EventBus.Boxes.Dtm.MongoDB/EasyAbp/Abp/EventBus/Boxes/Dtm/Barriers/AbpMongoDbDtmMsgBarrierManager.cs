@@ -6,6 +6,7 @@ using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Volo.Abp;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.MongoDB;
 using Volo.Abp.Uow;
@@ -36,7 +37,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     {
         if (dbContext.SessionHandle is null)
         {
-            throw new ApplicationException("DTM barrier is for ABP transactional events.");
+            throw new AbpException("DTM barrier is for ABP transactional events.");
         }
 
         try

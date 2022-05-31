@@ -4,6 +4,7 @@ using DtmCommon;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp;
 using Volo.Abp.EventBus.Boxes;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MultiTenancy;
@@ -54,7 +55,7 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
         await CheckActionApiTokenAsync(context);
 
         var gid = context.RequestHeaders.GetValue("dtm-gid") ??
-                  throw new ApplicationException("Cannot get dtm-gid from the gRPC request headers.");
+                  throw new AbpException("Cannot get dtm-gid from the gRPC request headers.");
 
         var tenantIdString = context.RequestHeaders.GetValue(DtmRequestHeaderNames.TenantId);
         var tenantId = tenantIdString.IsNullOrWhiteSpace() ? (Guid?)null : Guid.Parse(tenantIdString);
@@ -84,7 +85,7 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
             return new Empty();
         }
 
-        throw new ApplicationException(
+        throw new AbpException(
             $"Cannot find a DTM query prepared handler for the DbContext type {dbContextTypeName}");
     }
 
@@ -93,7 +94,7 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
         if (!await ActionApiTokenChecker.IsCorrectAsync(
                 context.RequestHeaders.GetValue(DtmRequestHeaderNames.ActionApiToken)))
         {
-            throw new ApplicationException("Incorrect ActionApiToken!");
+            throw new AbpException("Incorrect ActionApiToken!");
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DtmCommon;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers.DbSpecials;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Volo.Abp;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Uow;
@@ -36,7 +37,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
     {
         if (dbContext.Database.CurrentTransaction is null)
         {
-            throw new ApplicationException("DTM barrier is for ABP transactional events.");
+            throw new AbpException("DTM barrier is for ABP transactional events.");
         }
 
         var affected = await InternalInsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG);
