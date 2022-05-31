@@ -142,7 +142,7 @@ public class App1Module : AbpModule
         {
             options.Outboxes.Configure(config =>
             {
-                config.ImplementationType = typeof(IDtmDbContextEventOutbox<App1DbContext>);
+                config.UseDbContextWithDtmOutbox<App1DbContext>();
             });
         });
 

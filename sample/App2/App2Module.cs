@@ -141,7 +141,7 @@ public class App2Module : AbpModule
         {
             options.Outboxes.Configure(config =>
             {
-                config.ImplementationType = typeof(IDtmMongoDbContextEventOutbox<App2DbContext>);
+                config.UseMongoDbContextWithDtmOutbox<App2DbContext>();
             });
         });
 
