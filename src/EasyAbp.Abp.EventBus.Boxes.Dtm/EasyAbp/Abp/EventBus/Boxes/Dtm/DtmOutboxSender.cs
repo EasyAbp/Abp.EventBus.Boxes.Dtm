@@ -10,12 +10,12 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 /// </summary>
 public class DtmOutboxSender : IOutboxSender
 {
-    public async Task StartAsync(OutboxConfig outboxConfig, CancellationToken cancellationToken = new())
+    public virtual async Task StartAsync(OutboxConfig outboxConfig, CancellationToken cancellationToken = new())
     {
         await Task.CompletedTask;
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken = new CancellationToken())
+    public virtual async Task StopAsync(CancellationToken cancellationToken = new())
     {
         await Task.CompletedTask;
     }
