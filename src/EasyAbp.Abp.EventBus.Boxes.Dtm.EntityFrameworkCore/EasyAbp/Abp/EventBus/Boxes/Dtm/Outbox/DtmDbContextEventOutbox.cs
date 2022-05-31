@@ -50,7 +50,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
         throw new NotSupportedException();
     }
 
-    public virtual async Task DeleteManyAsync(IEnumerable<Guid> ids)
+    public virtual Task DeleteManyAsync(IEnumerable<Guid> ids)
     {
         throw new NotSupportedException();
     }

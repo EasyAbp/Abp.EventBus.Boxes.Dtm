@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using DtmCommon;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.Data;
+using Volo.Abp.EventBus.Boxes;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.Uow;
@@ -41,10 +40,7 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
     {
         await CheckActionApiTokenAsync(context);
 
-        if (DistributedEventBus is not ISupportsEventBoxes supportsEventBoxes)
-        {
-            throw new ApplicationException("Current distributed event bus does not support event boxes!");
-        }
+        var supportsEventBoxes = DistributedEventBus.AsSupportsEventBoxes();
 
         var eventInfos = EventInfosSerializer.Deserialize(request.OutgoingEventInfoListToByteString);
 
