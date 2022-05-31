@@ -28,8 +28,6 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
     protected IServiceProvider ServiceProvider { get; }
 
-    protected IDtmMsgGidProvider DtmMsgGidProvider { get; }
-
     protected IUnitOfWorkManager UnitOfWorkManager { get; }
 
     protected IEventInfosSerializer EventInfosSerializer { get; }
@@ -45,7 +43,6 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         IDtmMsgGidProvider gidProvider,
         IDtmTransFactory dtmTransFactory,
         IServiceProvider serviceProvider,
-        IDtmMsgGidProvider dtmMsgGidProvider,
         IUnitOfWorkManager unitOfWorkManager,
         IEventInfosSerializer eventInfosSerializer,
         IConnectionStringHasher connectionStringHasher,
@@ -56,7 +53,6 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         GidProvider = gidProvider;
         DtmTransFactory = dtmTransFactory;
         ServiceProvider = serviceProvider;
-        DtmMsgGidProvider = dtmMsgGidProvider;
         UnitOfWorkManager = unitOfWorkManager;
         EventInfosSerializer = eventInfosSerializer;
         ConnectionStringHasher = connectionStringHasher;
@@ -171,7 +167,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
             foreach (var barrierManager in barrierManagers)
             {
-                if (await barrierManager.TryInvokeInsertBarrierAsync(databaseApi, DtmMsgGidProvider.Create()))
+                if (await barrierManager.TryInvokeInsertBarrierAsync(databaseApi, model.Gid))
                 {
                     inserted = true;
                     break;
