@@ -21,7 +21,7 @@ You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which help t
 | Timeliness                                   	| :heavy_check_mark:        	| :x:                    	|
 | Less data transfer                           	| :x:                       	| :heavy_check_mark:     	|
 | Eventual consistency (transactional UOW)     	| :heavy_check_mark:        	| :heavy_check_mark:     	|
-| Eventual consistency (non-transactional UOW) 	| :x:                       	| :x:                    	|
+| Eventual consistency (non-transactional UOW) 	| :x:                       	| :heavy_check_mark: (event handlers idempotent required)|
 | Native idempotency                           	| :heavy_check_mark:        	| :heavy_check_mark:     	|
 | Multi-tenant-database support                	| :heavy_check_mark:        	| :x:                    	|
 | No additional external infrastructure        	| :x:                       	| :heavy_check_mark:     	|
@@ -70,6 +70,8 @@ If you are still confused about how it ensures eventual consistency, see DTM's [
 Todo.
 
 ## Installation
+
+1. Ensure you are NOT using the [CAP bus](https://github.com/EasyAbp/Abp.EventBus.CAP) and have installed another [bus provider](https://docs.abp.io/en/abp/latest/Distributed-Event-Bus#providers).
 
 1. Install the following NuGet packages. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/docs/How-To.md#add-nuget-packages))
 
