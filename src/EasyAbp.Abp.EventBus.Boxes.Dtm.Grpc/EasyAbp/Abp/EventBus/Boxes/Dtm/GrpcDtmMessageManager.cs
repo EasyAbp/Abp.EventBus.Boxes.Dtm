@@ -167,7 +167,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
             foreach (var barrierManager in barrierManagers)
             {
-                if (await barrierManager.TryInvokeInsertBarrierAsync(databaseApi, model.Gid))
+                if (await barrierManager.TryInvokeEnsureInsertBarrierAsync(databaseApi, model.Gid))
                 {
                     inserted = true;
                     break;

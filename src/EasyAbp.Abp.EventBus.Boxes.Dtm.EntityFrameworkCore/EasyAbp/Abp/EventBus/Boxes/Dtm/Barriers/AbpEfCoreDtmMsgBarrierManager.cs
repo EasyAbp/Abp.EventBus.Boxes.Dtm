@@ -33,14 +33,14 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         BarrierTableInitializer = barrierTableInitializer;
     }
     
-    public override async Task InsertBarrierAsync(IEfCoreDbContext dbContext, string gid)
+    public override async Task EnsureInsertBarrierAsync(IEfCoreDbContext dbContext, string gid)
     {
         if (dbContext.Database.CurrentTransaction is null)
         {
             throw new AbpException("DTM barrier is for ABP transactional events.");
         }
 
-        var affected = await InternalInsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG);
+        var affected = await InsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG);
         
         Logger?.LogDebug("currentAffected: {currentAffected}", affected);
 
@@ -54,7 +54,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
     {
         try
         {
-            await InternalInsertBarrierAsync(dbContext, gid, Constant.Barrier.MSG_BARRIER_REASON);
+            await InsertBarrierAsync(dbContext, gid, Constant.Barrier.MSG_BARRIER_REASON);
         }
         catch (Exception e)
         {
@@ -88,7 +88,7 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         return false;    // The "rollback" not inserted.
     }
 
-    protected virtual async Task<int> InternalInsertBarrierAsync(IEfCoreDbContext dbContext, string gid, string reason)
+    protected virtual async Task<int> InsertBarrierAsync(IEfCoreDbContext dbContext, string gid, string reason)
     {
         await BarrierTableInitializer.TryCreateTableAsync(dbContext);
         
@@ -116,14 +116,14 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         return affected;
     }
 
-    public override async Task<bool> TryInvokeInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
+    public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
     {
         if (!IsValidDatabaseApi<EfCoreDatabaseApi>(databaseApi))
         {
             return false;
         }
 
-        await InsertBarrierAsync(((EfCoreDatabaseApi)databaseApi).DbContext, gid);
+        await EnsureInsertBarrierAsync(((EfCoreDatabaseApi)databaseApi).DbContext, gid);
 
         return true;
     }

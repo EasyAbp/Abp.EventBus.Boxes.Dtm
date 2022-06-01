@@ -33,7 +33,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         BarrierCollectionInitializer = barrierCollectionInitializer;
     }
 
-    public override async Task InsertBarrierAsync(IAbpMongoDbContext dbContext, string gid)
+    public override async Task EnsureInsertBarrierAsync(IAbpMongoDbContext dbContext, string gid)
     {
         if (dbContext.SessionHandle is null)
         {
@@ -147,14 +147,14 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         });
     }
 
-    public override async Task<bool> TryInvokeInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
+    public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
     {
         if (!IsValidDatabaseApi<MongoDbDatabaseApi>(databaseApi))
         {
             return false;
         }
 
-        await InsertBarrierAsync(((MongoDbDatabaseApi)databaseApi).DbContext, gid);
+        await EnsureInsertBarrierAsync(((MongoDbDatabaseApi)databaseApi).DbContext, gid);
 
         return true;
     }
