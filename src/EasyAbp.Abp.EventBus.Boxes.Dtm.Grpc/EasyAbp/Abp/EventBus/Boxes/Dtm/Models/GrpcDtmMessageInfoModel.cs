@@ -7,7 +7,7 @@ using Volo.Abp.EventBus.Distributed;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
 
-public class DtmGrpcMessageInfoModel : IDtmMessageInfoModel
+public class GrpcDtmMessageInfoModel : IDtmMessageInfoModel
 {
     public bool EventsPublishingActionAdded { get; private set; }
     
@@ -20,7 +20,7 @@ public class DtmGrpcMessageInfoModel : IDtmMessageInfoModel
 
     public List<OutgoingEventInfo> EventInfos { get; set; } = new();
 
-    public DtmGrpcMessageInfoModel(string gid, object dtmMessage,
+    public GrpcDtmMessageInfoModel(string gid, object dtmMessage,
         [NotNull] DbConnectionLookupInfoModel dbConnectionLookupInfo)
     {
         Gid = gid;

@@ -118,16 +118,16 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
     {
         var gid = GidProvider.Create();
 
-        return new DtmGrpcMessageInfoModel(gid, DtmTransFactory.NewMsgGrpc(gid),
+        return new GrpcDtmMessageInfoModel(gid, DtmTransFactory.NewMsgGrpc(gid),
             new DbConnectionLookupInfoModel(dbContextType, CurrentTenant.Id, hashedConnectionString));
     }
 
     protected virtual Task AddEventsPublishingActionAsync(DtmOutboxEventBag eventBag)
     {
-        var defaultMessage = eventBag.DefaultMessage as DtmGrpcMessageInfoModel;
+        var defaultMessage = eventBag.DefaultMessage as GrpcDtmMessageInfoModel;
         defaultMessage?.AddEventsPublishingAction(AbpDtmGrpcOptions, EventInfosSerializer);
 
-        foreach (var message in eventBag.TransMessages.Values.Select(model => model as DtmGrpcMessageInfoModel))
+        foreach (var message in eventBag.TransMessages.Values.Select(model => model as GrpcDtmMessageInfoModel))
         {
             message!.AddEventsPublishingAction(AbpDtmGrpcOptions, EventInfosSerializer);
         }
