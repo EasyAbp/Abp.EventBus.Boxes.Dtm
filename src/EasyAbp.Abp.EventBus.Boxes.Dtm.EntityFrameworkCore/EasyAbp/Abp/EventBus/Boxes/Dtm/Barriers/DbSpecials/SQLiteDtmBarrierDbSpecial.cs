@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS {tableName} (
   [update_time] datetime NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP))
 );
 
-CREATE UNIQUE INDEX [ix_uniq_barrier] ON {tableName}
+CREATE UNIQUE INDEX IF NOT EXISTS [ix_uniq_barrier] ON {tableName}
 ([gid] ASC, [branch_id] ASC, [op] ASC, [barrier_id] ASC);
 ";
         return sql;
