@@ -8,6 +8,7 @@ public static class BarrierSqlTemplates
     private static IDtmBarrierDbSpecial MySQLDbSpecial { get; set; } = new MySQLDtmBarrierDbSpecial();
     private static IDtmBarrierDbSpecial PostgreSQLDbSpecial { get; set; } = new PostgreSQLDtmBarrierDbSpecial();
     private static IDtmBarrierDbSpecial SQLServerDbSpecial { get; set; } = new SQLServerDtmBarrierDbSpecial();
+    private static IDtmBarrierDbSpecial SQLiteDbSpecial { get; set; } = new SQLiteDtmBarrierDbSpecial();
 
     public static Dictionary<string, IDtmBarrierDbSpecial> DbProviderSpecialMapping { get; } = new()
     {
@@ -22,5 +23,8 @@ public static class BarrierSqlTemplates
         
         // SQL Server
         { "Microsoft.EntityFrameworkCore.SqlServer", SQLServerDbSpecial },
+        
+        // SQLite
+        { "Microsoft.EntityFrameworkCore.Sqlite", SQLiteDbSpecial },
     };
 }
