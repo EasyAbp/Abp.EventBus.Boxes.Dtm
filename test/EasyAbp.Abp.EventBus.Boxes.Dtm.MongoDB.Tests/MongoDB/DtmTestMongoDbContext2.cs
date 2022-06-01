@@ -3,8 +3,8 @@ using Volo.Abp.MongoDB;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB;
 
-[ConnectionStringName("Dtm")]
-public class DtmTestMongoDbContext : AbpMongoDbContext
+[ConnectionStringName("Dtm2")]
+public class DtmTestMongoDbContext2 : AbpMongoDbContext
 {
     /* Add mongo collections here. Example:
      * public IMongoCollection<Question> Questions => Collection<Question>();

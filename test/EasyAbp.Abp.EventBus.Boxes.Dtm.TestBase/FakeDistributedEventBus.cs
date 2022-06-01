@@ -65,12 +65,12 @@ public class FakeDistributedEventBus : DistributedEventBusBase, ITransientDepend
 
     public override async Task PublishFromOutboxAsync(OutgoingEventInfo outgoingEvent, OutboxConfig outboxConfig)
     {
-        throw new NotSupportedException();
+        await Task.CompletedTask;
     }
 
     public override async Task PublishManyFromOutboxAsync(IEnumerable<OutgoingEventInfo> outgoingEvents, OutboxConfig outboxConfig)
     {
-        throw new NotSupportedException();
+        await Task.CompletedTask;
     }
 
     public override async Task ProcessFromInboxAsync(IncomingEventInfo incomingEvent, InboxConfig inboxConfig)
@@ -80,6 +80,6 @@ public class FakeDistributedEventBus : DistributedEventBusBase, ITransientDepend
 
     protected override byte[] Serialize(object eventData)
     {
-        throw new NotSupportedException();
+        return null;
     }
 }

@@ -1,45 +1,57 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus.Distributed;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
 public class FakeDtmMessageManager : IDtmMessageManager, ITransientDependency
 {
+    protected ICurrentTenant CurrentTenant { get; }
     protected IServiceProvider ServiceProvider { get; }
+    protected IDtmMsgGidProvider GidProvider { get; }
     protected IUnitOfWorkManager UnitOfWorkManager { get; }
+    protected IConnectionStringHasher ConnectionStringHasher { get; }
     protected IConnectionStringResolver ConnectionStringResolver { get; }
 
     public FakeDtmMessageManager(
+        ICurrentTenant currentTenant,
         IServiceProvider serviceProvider,
+        IDtmMsgGidProvider gidProvider,
         IUnitOfWorkManager unitOfWorkManager,
+        IConnectionStringHasher connectionStringHasher,
         IConnectionStringResolver connectionStringResolver)
     {
+        CurrentTenant = currentTenant;
         ServiceProvider = serviceProvider;
+        GidProvider = gidProvider;
         UnitOfWorkManager = unitOfWorkManager;
+        ConnectionStringHasher = connectionStringHasher;
         ConnectionStringResolver = connectionStringResolver;
     }
 
     public virtual async Task AddEventAsync(DtmOutboxEventBag eventBag, object dbContext, string connectionString,
         object transObj, OutgoingEventInfo eventInfo)
     {
-        await Task.CompletedTask;
+        var dbContextType = dbContext.GetType();
+        var hashedConnectionString = await ConnectionStringHasher.HashAsync(connectionString);
+
+        var model = GetOrCreateDtmMessageInfoModel(eventBag, transObj, dbContextType, hashedConnectionString);
+
+        model.EventInfos.Add(eventInfo);
     }
 
     public async Task InsertBarriersAndPrepareAsync(DtmOutboxEventBag eventBag,
         CancellationToken cancellationToken = default)
-    {
-        await Task.CompletedTask;
-    }
-
-    public virtual async Task SubmitAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default)
     {
         // await AddEventsPublishingActionAsync(eventBag);
 
@@ -51,6 +63,11 @@ public class FakeDtmMessageManager : IDtmMessageManager, ITransientDependency
         // await PrepareTransMessagesAsync(eventBag, cancellationToken);
         
         await InsertTransMessagesBarriersAsync(eventBag);
+    }
+
+    public virtual async Task SubmitAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
     }
     
     protected virtual async Task InsertTransMessagesBarriersAsync(DtmOutboxEventBag eventBag)
@@ -91,5 +108,26 @@ public class FakeDtmMessageManager : IDtmMessageManager, ITransientDependency
         Check.NotNull(databaseApi, nameof(databaseApi));
 
         return databaseApi;
+    }
+    
+    protected virtual IDtmMessageInfoModel GetOrCreateDtmMessageInfoModel(DtmOutboxEventBag eventBag,
+        [CanBeNull] object transObj, Type dbContextType, string hashedConnectionString)
+    {
+        if (transObj is null)
+        {
+            return eventBag.DefaultMessage ?? (eventBag.DefaultMessage =
+                CreateDtmMessageInfoModel(dbContextType, hashedConnectionString));
+        }
+
+        return eventBag.TransMessages.GetOrAdd(transObj,
+            _ => CreateDtmMessageInfoModel(dbContextType, hashedConnectionString));
+    }
+
+    protected virtual IDtmMessageInfoModel CreateDtmMessageInfoModel(Type dbContextType, string hashedConnectionString)
+    {
+        var gid = GidProvider.Create();
+
+        return new FakeDtmMessageInfoModel(gid, null,
+            new DbConnectionLookupInfoModel(dbContextType, CurrentTenant.Id, hashedConnectionString));
     }
 }

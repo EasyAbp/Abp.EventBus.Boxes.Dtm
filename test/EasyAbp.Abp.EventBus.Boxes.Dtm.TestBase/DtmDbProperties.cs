@@ -7,4 +7,5 @@ public static class DtmDbProperties
     public static string DbSchema { get; set; } = null;
 
     public const string ConnectionStringName = "Dtm";
+    public const string ConnectionString2Name = "Dtm2";
 }
