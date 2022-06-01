@@ -55,7 +55,7 @@ public class DtmDbContextEventInbox<TDbContext> : IDtmDbContextEventInbox<TDbCon
         throw new NotSupportedException();
     }
 
-    [UnitOfWork]
+    [UnitOfWork(false)]
     public virtual async Task<bool> ExistsByMessageIdAsync(string messageId)
     {
         var dbContext = await DbContextProvider.GetDbContextAsync();
