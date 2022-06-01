@@ -85,6 +85,7 @@ Todo.
 ```CSharp
 public override void ConfigureServices(ServiceConfigurationContext context)
 {
+    // See https://docs.abp.io/en/abp/latest/Distributed-Event-Bus#additional-configuration
     Configure<AbpDistributedEventBusOptions>(options =>
     {
         options.Outboxes.Configure(config =>
@@ -119,6 +120,12 @@ public override void OnApplicationInitialization(ApplicationInitializationContex
 }
 ```
 
+## Usage
+
+1. Install and run the DTM Server. See https://en.dtm.pub/guide/install.html.
+
+1. Ensure the intranet endpoint (you configured above) is available since the DTM Server uses it to invoke your app.
+
 ## Roadmap
 
-Todo.
+- [ ] Barrier tables/collections auto clean up.
