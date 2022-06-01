@@ -1,7 +1,7 @@
-﻿using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EventBus.Distributed;
+﻿using EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
+using Volo.Abp.EntityFrameworkCore;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
+namespace Volo.Abp.EventBus.Distributed;
 
 public static class EfCoreDtmOutboxConfigExtensions
 {
