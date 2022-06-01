@@ -12,7 +12,7 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
     typeof(AbpAutofacModule),
     typeof(AbpTestBaseModule),
     typeof(AbpAuthorizationModule),
-    typeof(AbpEventBusBoxesDtmGrpcModule)
+    typeof(AbpEventBusBoxesDtmModule)
     )]
 public class AbpEventBusBoxesDtmTestBaseModule : AbpModule
 {

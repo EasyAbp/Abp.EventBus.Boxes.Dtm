@@ -17,7 +17,7 @@
     <PackageReference Include="Volo.Abp.Autofac" Version="$(AbpVersion)" />
     <PackageReference Include="Volo.Abp.Authorization" Version="$(AbpVersion)" />
     <PackageReference Include="Volo.Abp.TestBase" Version="$(AbpVersion)" />
-    <ProjectReference Include="..\..\src\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc.csproj" />
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.EventBus.Boxes.Dtm\EasyAbp.Abp.EventBus.Boxes.Dtm.csproj" />
   </ItemGroup>
 
 </Project>
