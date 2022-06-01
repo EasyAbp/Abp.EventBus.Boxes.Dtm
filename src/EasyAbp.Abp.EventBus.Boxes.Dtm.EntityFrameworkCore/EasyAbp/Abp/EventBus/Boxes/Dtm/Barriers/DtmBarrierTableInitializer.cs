@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
@@ -16,7 +16,6 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 
 public class DtmBarrierTableInitializer : IDtmBarrierTableInitializer, ISingletonDependency
 {
-    protected IServiceProvider ServiceProvider { get; }
     protected IUnitOfWorkManager UnitOfWorkManager { get; }
     private ILogger<DtmBarrierTableInitializer> Logger { get; }
     private ConcurrentDictionary<string, bool> CreatedConnectionStrings { get; } = new();
@@ -24,12 +23,10 @@ public class DtmBarrierTableInitializer : IDtmBarrierTableInitializer, ISingleto
     protected AbpDtmEventBoxesOptions Options { get; }
 
     public DtmBarrierTableInitializer(
-        IServiceProvider serviceProvider,
         IUnitOfWorkManager unitOfWorkManager,
         ILogger<DtmBarrierTableInitializer> logger,
         IOptions<AbpDtmEventBoxesOptions> options)
     {
-        ServiceProvider = serviceProvider;
         UnitOfWorkManager = unitOfWorkManager;
         Logger = logger;
         Options = options.Value;
@@ -56,19 +53,14 @@ public class DtmBarrierTableInitializer : IDtmBarrierTableInitializer, ISingleto
         }
 
         var sql = special.GetCreateBarrierTableSql(Options);
+        var currentTransaction = dbContext.Database.CurrentTransaction?.GetDbTransaction();
 
-        using var newUow = UnitOfWorkManager.Begin(requiresNew: true);
-        
-        var dbContextProviderType = typeof(IDbContextProvider<>).MakeGenericType(dbContext.GetType());
-        var dbContextProvider = ServiceProvider.GetRequiredService(dbContextProviderType);
-        dynamic task =
-            dbContextProviderType.GetMethod("GetDbContextAsync")!.Invoke(
-                dbContextProvider, null);
+        await dbContext.Database.GetDbConnection().ExecuteAsync(sql, null, currentTransaction);
 
-        IEfCoreDbContext newDbContext = await task!;
-            
-        await newDbContext.Database.GetDbConnection().ExecuteAsync(sql, null);
-
-        CreatedConnectionStrings[connectionString] = true;
+        UnitOfWorkManager.Current.OnCompleted(() =>
+        {
+            CreatedConnectionStrings[connectionString] = true;
+            return Task.CompletedTask;
+        });
     }
 }
