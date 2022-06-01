@@ -47,7 +47,7 @@ public class DtmOutboxTests : DtmEntityFrameworkCoreTestBase
     }
     
     [Fact]
-    public virtual async Task Should_Not_Barrier_As_Rollback_If_Trans_Succeeded()
+    public virtual async Task Should_Not_Insert_Barrier_As_Rollback_If_Trans_Succeeded()
     {
         IDtmMessageInfoModel messageInfoModel;
 
