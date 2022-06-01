@@ -36,10 +36,10 @@ public class AbpEventBusBoxesDtmMongoDbTestModule : AbpModule
                 config.UseMongoDbContextWithDtmOutbox<DtmTestMongoDbContext>();
             });
 
-            // options.Inboxes.Configure(config =>
-            // {
-            //     config.UseMongoDbContextWithDtmInbox<DtmTestMongoDbContext>();
-            // });
+            options.Inboxes.Configure(config =>
+            {
+                config.UseMongoDbContextWithDtmInbox<DtmTestMongoDbContext>();
+            });
         });
     }
 }
