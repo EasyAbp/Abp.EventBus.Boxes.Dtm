@@ -109,15 +109,27 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
         await BarrierCollectionInitializer.TryCreateIndexesAsync(mongoCollection);
 
-        await mongoCollection.InsertOneAsync(new DtmBarrierDocument
+        try
         {
-            TransType = Constant.TYPE_MSG,
-            GId = gid,
-            BranchId = Constant.Barrier.MSG_BRANCHID,
-            Op = Constant.TYPE_MSG,
-            BarrierId = Constant.Barrier.MSG_BARRIER_ID,
-            Reason = reason
-        });
+            await mongoCollection.InsertOneAsync(new DtmBarrierDocument
+            {
+                TransType = Constant.TYPE_MSG,
+                GId = gid,
+                BranchId = Constant.Barrier.MSG_BRANCHID,
+                Op = Constant.TYPE_MSG,
+                BarrierId = Constant.Barrier.MSG_BARRIER_ID,
+                Reason = reason
+            });
+        }
+        catch (Exception e)
+        {
+            if (e is MongoWriteException && e.Message.Contains("DuplicateKey"))
+            {
+                throw new DtmDuplicatedException();
+            }
+            
+            throw;
+        }
     }
 
     public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
