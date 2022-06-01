@@ -17,8 +17,6 @@ namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers;
 public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongoDbContext>,
     IAbpMongoDbDtmMsgBarrierManager, ITransientDependency
 {
-    public static string DefaultBarrierCollectionName { get; set; } = "dtm_barrier";
-
     protected AbpDtmEventBoxesOptions Options { get; }
     private ILogger<AbpMongoDbDtmMsgBarrierManager> Logger { get; }
     protected IDtmMongoDbBarrierCollectionInitializer BarrierCollectionInitializer { get; }
@@ -42,7 +40,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
         try
         {
-            await CheckAndInsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG);
+            await InsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG);
         }
         catch (Exception e)
         {
@@ -60,7 +58,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     {
         try
         {
-            await CheckAndInsertBarrierAsync(dbContext, gid, Constant.Barrier.MSG_BARRIER_REASON);
+            await InsertBarrierAsync(dbContext, gid, Constant.Barrier.MSG_BARRIER_REASON);
         }
         catch (Exception e)
         {
@@ -95,7 +93,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
     protected virtual IMongoCollection<DtmBarrierDocument> GetMongoCollection(IAbpMongoDbContext dbContext)
     {
-        var configuredTableName = Options.BarrierTableName ?? DefaultBarrierCollectionName;
+        var configuredTableName = Options.BarrierTableName ?? DtmBarrierProperties.DefaultBarrierCollectionName;
 
         var fs = configuredTableName.Split('.');
 
@@ -104,37 +102,12 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
             : dbContext.Database.GetCollection<DtmBarrierDocument>(configuredTableName);
     }
 
-    protected virtual async Task CheckAndInsertBarrierAsync(IAbpMongoDbContext dbContext, string gid,
+    protected virtual async Task InsertBarrierAsync(IAbpMongoDbContext dbContext, string gid,
         string reason)
     {
         var mongoCollection = GetMongoCollection(dbContext);
 
         await BarrierCollectionInitializer.TryCreateIndexesAsync(mongoCollection);
-
-        List<DtmBarrierDocument> res;
-
-        try
-        {
-            var filter = BuildFindFilters(gid, Constant.Barrier.MSG_BRANCHID, Constant.TYPE_MSG,
-                Constant.Barrier.MSG_BARRIER_ID);
-            
-            var cursor = await mongoCollection.FindAsync<DtmBarrierDocument>(filter);
-            
-            res = await cursor.ToListAsync();
-        }
-        catch (Exception e)
-        {
-            Logger?.LogDebug(e,
-                "Find document exception here, gid={gid}, branchId={branchId}, op={op}, barrierId={barrierId}", gid,
-                Constant.Barrier.MSG_BRANCHID, Constant.TYPE_MSG, Constant.Barrier.MSG_BARRIER_ID);
-
-            throw;
-        }
-
-        if (res is { Count: > 0 })
-        {
-            throw new DtmDuplicatedException();
-        }
 
         await mongoCollection.InsertOneAsync(new DtmBarrierDocument
         {
