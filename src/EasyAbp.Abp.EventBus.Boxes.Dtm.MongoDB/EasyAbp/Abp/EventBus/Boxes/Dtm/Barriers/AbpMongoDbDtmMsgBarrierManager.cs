@@ -63,7 +63,11 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         catch (Exception e)
         {
             Logger?.LogWarning(e, "Insert Barrier error, gid={gid}", gid);
-            throw;
+
+            if (e is not DtmDuplicatedException)
+            {
+                throw;
+            }
         }
 
         try
