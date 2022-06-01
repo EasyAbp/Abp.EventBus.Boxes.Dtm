@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Sqlite;
+using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Modularity;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore;
@@ -25,6 +27,24 @@ public class AbpEventBusBoxesDtmEntityFrameworkCoreTestModule : AbpModule
             {
                 abpDbContextConfigurationContext.DbContextOptions.UseSqlite(sqliteConnection);
             });
+        });
+        
+        context.Services.AddAbpDbContext<DtmTestDbContext>(options =>
+        {
+            options.AddDefaultRepositories();
+        });
+        
+        Configure<AbpDistributedEventBusOptions>(options =>
+        {
+            options.Outboxes.Configure(config =>
+            {
+                config.UseDbContextWithDtmOutbox<DtmTestDbContext>();
+            });
+
+            // options.Inboxes.Configure(config =>
+            // {
+            //     config.UseDbContextWithDtmInbox<DtmTestDbContext>();
+            // });
         });
     }
 

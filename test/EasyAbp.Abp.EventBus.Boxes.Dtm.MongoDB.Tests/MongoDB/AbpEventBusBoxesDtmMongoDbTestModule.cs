@@ -1,5 +1,7 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Data;
+using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Modularity;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.MongoDB;
@@ -20,6 +22,24 @@ public class AbpEventBusBoxesDtmMongoDbTestModule : AbpModule
         Configure<AbpDbConnectionOptions>(options =>
         {
             options.ConnectionStrings.Default = connectionString;
+        });
+        
+        context.Services.AddMongoDbContext<DtmTestMongoDbContext>(options =>
+        {
+            options.AddDefaultRepositories();
+        });
+        
+        Configure<AbpDistributedEventBusOptions>(options =>
+        {
+            options.Outboxes.Configure(config =>
+            {
+                config.UseMongoDbContextWithDtmOutbox<DtmTestMongoDbContext>();
+            });
+
+            // options.Inboxes.Configure(config =>
+            // {
+            //     config.UseMongoDbContextWithDtmInbox<DtmTestMongoDbContext>();
+            // });
         });
     }
 }

@@ -19,6 +19,8 @@ public class AbpEventBusBoxesDtmTestBaseModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddAlwaysAllowAuthorization();
+        
+        context.Services.AddDtmBoxes();
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
