@@ -41,10 +41,10 @@ public class AbpEventBusBoxesDtmEntityFrameworkCoreTestModule : AbpModule
                 config.UseDbContextWithDtmOutbox<DtmTestDbContext>();
             });
 
-            // options.Inboxes.Configure(config =>
-            // {
-            //     config.UseDbContextWithDtmInbox<DtmTestDbContext>();
-            // });
+            options.Inboxes.Configure(config =>
+            {
+                config.UseDbContextWithDtmInbox<DtmTestDbContext>();
+            });
         });
     }
 
