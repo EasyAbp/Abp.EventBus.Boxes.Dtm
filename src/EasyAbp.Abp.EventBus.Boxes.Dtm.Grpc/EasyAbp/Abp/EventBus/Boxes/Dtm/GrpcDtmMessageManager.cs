@@ -141,17 +141,6 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         foreach (var model in eventBag.TransMessages.Values)
         {
             var message = (model.DtmMessage as MsgGrpc)!;
-
-            var dbContextType = $"{model.DbConnectionLookupInfo.DbContextType.FullName}, {model.DbConnectionLookupInfo.DbContextType.Assembly.GetName().Name}";
-
-            message.SetBranchHeaders(new Dictionary<string, string>
-            {
-                {DtmRequestHeaderNames.ActionApiToken, AbpDtmGrpcOptions.ActionApiToken},
-                {DtmRequestHeaderNames.DbContextType, dbContextType},
-                {DtmRequestHeaderNames.TenantId, model.DbConnectionLookupInfo.TenantId.ToString()},
-                {DtmRequestHeaderNames.HashedConnectionString, model.DbConnectionLookupInfo.HashedConnectionString},
-            });
-
             await message.Prepare(AbpDtmGrpcOptions.GetQueryPreparedAddress(), cancellationToken);
         }
     }

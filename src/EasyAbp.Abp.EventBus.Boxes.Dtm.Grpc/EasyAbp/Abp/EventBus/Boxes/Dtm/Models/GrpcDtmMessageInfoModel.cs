@@ -35,9 +35,22 @@ public class GrpcDtmMessageInfoModel : IDtmMessageInfoModel
             throw new AbpException("Duplicate events publishing action.");
         }
         
-        ((MsgGrpc)DtmMessage).Add(abpDtmEventBoxesOptions.GetPublishEventsAddress(), new DtmMsgPublishEventsRequest
+        var message = (DtmMessage as MsgGrpc)!;
+        
+        message.Add(abpDtmEventBoxesOptions.GetPublishEventsAddress(), new DtmMsgPublishEventsRequest
         {
             OutgoingEventInfoListToByteString = serializer.Serialize(EventInfos)
+        });
+
+        var dbContextType =
+            $"{DbConnectionLookupInfo.DbContextType.FullName}, {DbConnectionLookupInfo.DbContextType.Assembly.GetName().Name}";
+
+        message.SetBranchHeaders(new Dictionary<string, string>
+        {
+            {DtmRequestHeaderNames.ActionApiToken, abpDtmEventBoxesOptions.ActionApiToken},
+            {DtmRequestHeaderNames.DbContextType, dbContextType},
+            {DtmRequestHeaderNames.TenantId, DbConnectionLookupInfo.TenantId.ToString()},
+            {DtmRequestHeaderNames.HashedConnectionString, DbConnectionLookupInfo.HashedConnectionString},
         });
 
         EventsPublishingActionAdded = true;
