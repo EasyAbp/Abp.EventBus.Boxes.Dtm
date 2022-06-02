@@ -46,11 +46,7 @@ public class DtmMongoDbBarrierCollectionInitializer : IDtmMongoDbBarrierCollecti
 
         foreach (var server in servers)
         {
-            UnitOfWorkManager.Current.OnCompleted(() =>
-            {
-                CreatedServers[server] = true;
-                return Task.CompletedTask;
-            });
+            CreatedServers[server] = true;
         }
     }
 }
