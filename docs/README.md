@@ -16,16 +16,16 @@ You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which help t
 
 ## Differences From the ABP's Default Event Boxes
 
-|                                               | DTM 2-phase Message Boxes |                 ABP 5.0+ Default Boxes                 |
-| :-------------------------------------------: | :-----------------------: | :----------------------------------------------------: |
-|                  Speediness                   |    :heavy_check_mark:     |                          :x:                           |
-|              Less data transfer               |            :x:            |                   :heavy_check_mark:                   |
-|   Guaranteed publish<br>(transactional UOW)   |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
-| Guaranteed publish<br>(non-transactional UOW) |            :x:            | :heavy_check_mark:<br>(consumers idempotency required) |
-|       No consumers idempotency required       |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
-|         Multi-tenant-database support         |    :heavy_check_mark:     |                          :x:                           |
-|     No additional external infrastructure     |            :x:            |                   :heavy_check_mark:                   |
-|              Dashboard and Alarm              |    :heavy_check_mark:     |                          :x:                           |
+|                                                     | DTM 2-phase Message Boxes |                 ABP 5.0+ Default Boxes                 |
+| :-------------------------------------------------: | :-----------------------: | :----------------------------------------------------: |
+|                     Speediness                      |    :heavy_check_mark:     |                          :x:                           |
+|                 Less data transfer                  |            :x:            |                   :heavy_check_mark:                   |
+|   Be guaranteed to publish<br>(transactional UOW)   |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
+| Be guaranteed to publish<br>(non-transactional UOW) |            :x:            | :heavy_check_mark:<br>(consumers idempotency required) |
+|          No consumers idempotency required          |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
+|            Multi-tenant-database support            |    :heavy_check_mark:     |                          :x:                           |
+|        No additional external infrastructure        |            :x:            |                   :heavy_check_mark:                   |
+|                 Dashboard and Alarm                 |    :heavy_check_mark:     |                          :x:                           |
 
 ## How Does the DTM Outbox Work?
 
@@ -63,7 +63,7 @@ Now, the DTM server has received a "submit" request. It invokes the app's `Publi
    
 </details>
 
-> If you are still confused about how it ensures eventual consistency, see DTM's [2-phase messages doc](https://en.dtm.pub/practice/msg.html) for more information.
+> If you are still confused about how it is guaranteed to publish, see DTM's [2-phase messages doc](https://en.dtm.pub/practice/msg.html) for more information.
 
 ## How Does the DTM Inbox Work?
 
