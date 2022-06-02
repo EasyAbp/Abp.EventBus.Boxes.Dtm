@@ -144,6 +144,10 @@ public class App1Module : AbpModule
             {
                 config.UseDbContextWithDtmOutbox<App1DbContext>();
             });
+            options.Inboxes.Configure(config =>
+            {
+                config.UseDbContextWithDtmInbox<App1DbContext>();
+            });
         });
 
         ConfigureMultiTenancy();
