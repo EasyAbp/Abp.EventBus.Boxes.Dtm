@@ -21,7 +21,7 @@ You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which help t
 |Timeliness                                      	 |:heavy_check_mark:        	 |:x:                                                     	 |
 |Less data transfer                              	 |:x:                       	 |:heavy_check_mark:                                      	 |
 |Eventual consistency<br>(transactional UOW)     	 |:heavy_check_mark:        	 |:heavy_check_mark:                                      	 |
-|Eventual consistency<br>(non-transactional UOW) 	 |:x:                       	 |:heavy_check_mark:<br>(event handlers idempotent required) |
+|Eventual consistency<br>(non-transactional UOW) 	 |:x:                       	 |:heavy_check_mark:<br>(consumers idempotent required)      |
 |Native idempotency                              	 |:heavy_check_mark:        	 |:heavy_check_mark:                                      	 |
 |Multi-tenant-database support                   	 |:heavy_check_mark:        	 |:x:                                                     	 |
 |No additional external infrastructure           	 |:x:                       	 |:heavy_check_mark:                                      	 |
