@@ -18,7 +18,7 @@ You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which help t
 
 |                        	                         |DTM 2-phase Message Boxes 	 |ABP 5.0+ Default Boxes                                  	 |
 |:------------------------------------------------:|:--------------------------:|:--------------------------------------------------------:|
-|Timeliness                                      	 |:heavy_check_mark:        	 |:x:                                                     	 |
+|Speediness                                      	 |:heavy_check_mark:        	 |:x:                                                     	 |
 |Less data transfer                              	 |:x:                       	 |:heavy_check_mark:                                      	 |
 |Eventual consistency<br>(transactional UOW)     	 |:heavy_check_mark:        	 |:heavy_check_mark:                                      	 |
 |Eventual consistency<br>(non-transactional UOW) 	 |:x:                       	 |:heavy_check_mark:<br>(consumers idempotent required)      |
