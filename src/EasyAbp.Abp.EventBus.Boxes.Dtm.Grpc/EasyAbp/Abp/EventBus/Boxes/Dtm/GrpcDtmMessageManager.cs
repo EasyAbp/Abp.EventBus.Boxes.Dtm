@@ -81,7 +81,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         // That means when the DTM crashes, non-transactional events will never publish.
         // To avoid this problem, please KEEP USING TRANSACTION if you need write-operations.
 
-        await PrepareTransMessagesAsync(eventBag);
+        await PrepareTransMessagesAsync(eventBag, cancellationToken);
 
         await InsertTransMessagesBarriersAsync(eventBag, cancellationToken);
     }
@@ -135,7 +135,8 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         return Task.CompletedTask;
     }
 
-    protected virtual async Task PrepareTransMessagesAsync(DtmOutboxEventBag eventBag)
+    protected virtual async Task PrepareTransMessagesAsync(DtmOutboxEventBag eventBag,
+        CancellationToken cancellationToken = default)
     {
         foreach (var model in eventBag.TransMessages.Values)
         {
@@ -151,7 +152,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
                 {DtmRequestHeaderNames.HashedConnectionString, model.DbConnectionLookupInfo.HashedConnectionString},
             });
 
-            await message.Prepare(AbpDtmGrpcOptions.GetQueryPreparedAddress());
+            await message.Prepare(AbpDtmGrpcOptions.GetQueryPreparedAddress(), cancellationToken);
         }
     }
 

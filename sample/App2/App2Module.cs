@@ -143,6 +143,10 @@ public class App2Module : AbpModule
             {
                 config.UseMongoDbContextWithDtmOutbox<App2DbContext>();
             });
+            options.Inboxes.Configure(config =>
+            {
+                config.UseMongoDbContextWithDtmInbox<App2DbContext>();
+            });
         });
 
         ConfigureMultiTenancy();

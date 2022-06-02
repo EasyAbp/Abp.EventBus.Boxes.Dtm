@@ -53,10 +53,10 @@ public class AbpEventBusBoxesDtmMongoDbTestModule : AbpModule
                 // config.Selector = type => type == typeof(Test2Eto);
             });
 
-            // options.Inboxes.Configure(config =>
-            // {
-            //     config.UseMongoDbContextWithDtmInbox<DtmTestMongoDbContext>();
-            // });
+            options.Inboxes.Configure(config =>
+            {
+                config.UseMongoDbContextWithDtmInbox<DtmTestMongoDbContext>();
+            });
         });
     }
 }

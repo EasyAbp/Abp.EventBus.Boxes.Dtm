@@ -65,10 +65,10 @@ public class AbpEventBusBoxesDtmEntityFrameworkCoreTestModule : AbpModule
                 // config.Selector = type => type == typeof(Test2Eto);
             });
 
-            // options.Inboxes.Configure(config =>
-            // {
-            //     config.UseDbContextWithDtmInbox<DtmTestDbContext>();
-            // });
+            options.Inboxes.Configure(config =>
+            {
+                config.UseDbContextWithDtmInbox<DtmTestDbContext>();
+            });
         });
         
         Configure<AbpDbConnectionOptions>(options =>

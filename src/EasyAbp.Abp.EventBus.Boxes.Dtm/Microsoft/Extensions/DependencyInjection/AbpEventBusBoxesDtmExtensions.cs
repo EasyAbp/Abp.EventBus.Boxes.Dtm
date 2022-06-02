@@ -53,6 +53,9 @@ public static class AbpEventBusBoxesDtmExtensions
     
     private static IServiceCollection AddDtmInbox(this IServiceCollection services)
     {
+        services.TryAddTransient<DtmInboxProcessor>();
+        services.Replace(ServiceDescriptor.Transient<IInboxProcessor, DtmInboxProcessor>());
+        
         return services;
     }
 
