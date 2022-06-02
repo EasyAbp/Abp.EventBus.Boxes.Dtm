@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using DtmCommon;
@@ -33,7 +34,8 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         BarrierTableInitializer = barrierTableInitializer;
     }
     
-    public override async Task EnsureInsertBarrierAsync(IEfCoreDbContext dbContext, string gid)
+    public override async Task EnsureInsertBarrierAsync(IEfCoreDbContext dbContext, string gid,
+        CancellationToken cancellationToken = default)
     {
         if (dbContext.Database.CurrentTransaction is null)
         {
@@ -50,7 +52,8 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         }
     }
 
-    public override async Task<bool> TryInsertBarrierAsRollbackAsync(IEfCoreDbContext dbContext, string gid)
+    public override async Task<bool> TryInsertBarrierAsRollbackAsync(IEfCoreDbContext dbContext, string gid,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -116,7 +119,8 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
         return affected;
     }
 
-    public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
+    public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid,
+        CancellationToken cancellationToken)
     {
         if (!IsValidDatabaseApi<EfCoreDatabaseApi>(databaseApi))
         {

@@ -83,7 +83,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
         await PrepareTransMessagesAsync(eventBag);
 
-        await InsertTransMessagesBarriersAsync(eventBag);
+        await InsertTransMessagesBarriersAsync(eventBag, cancellationToken);
     }
 
     public virtual async Task SubmitAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default)
@@ -155,7 +155,8 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         }
     }
 
-    protected virtual async Task InsertTransMessagesBarriersAsync(DtmOutboxEventBag eventBag)
+    protected virtual async Task InsertTransMessagesBarriersAsync(DtmOutboxEventBag eventBag,
+        CancellationToken cancellationToken = default)
     {
         foreach (var model in eventBag.TransMessages.Values)
         {
@@ -167,7 +168,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
             foreach (var barrierManager in barrierManagers)
             {
-                if (await barrierManager.TryInvokeEnsureInsertBarrierAsync(databaseApi, model.Gid))
+                if (await barrierManager.TryInvokeEnsureInsertBarrierAsync(databaseApi, model.Gid, cancellationToken))
                 {
                     inserted = true;
                     break;

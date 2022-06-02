@@ -62,7 +62,7 @@ public class FakeDtmMessageManager : IDtmMessageManager, ITransientDependency
 
         // await PrepareTransMessagesAsync(eventBag, cancellationToken);
         
-        await InsertTransMessagesBarriersAsync(eventBag);
+        await InsertTransMessagesBarriersAsync(eventBag, cancellationToken);
     }
 
     public virtual async Task SubmitAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default)
@@ -70,7 +70,8 @@ public class FakeDtmMessageManager : IDtmMessageManager, ITransientDependency
         await Task.CompletedTask;
     }
     
-    protected virtual async Task InsertTransMessagesBarriersAsync(DtmOutboxEventBag eventBag)
+    protected virtual async Task InsertTransMessagesBarriersAsync(DtmOutboxEventBag eventBag,
+        CancellationToken cancellationToken = default)
     {
         foreach (var model in eventBag.TransMessages.Values)
         {
@@ -82,7 +83,7 @@ public class FakeDtmMessageManager : IDtmMessageManager, ITransientDependency
 
             foreach (var barrierManager in barrierManagers)
             {
-                if (await barrierManager.TryInvokeEnsureInsertBarrierAsync(databaseApi, model.Gid))
+                if (await barrierManager.TryInvokeEnsureInsertBarrierAsync(databaseApi, model.Gid, cancellationToken))
                 {
                     inserted = true;
                     break;
