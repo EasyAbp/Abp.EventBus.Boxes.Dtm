@@ -140,6 +140,8 @@ public override void OnApplicationInitialization(ApplicationInitializationContex
 
 1. Ensure the intranet endpoint (you configured above) is available since the DTM Server uses it to invoke your app.
 
+1. The DTM event boxes should work now.
+
 ## Roadmap
 
 - [ ] Barrier tables/collections auto clean up.
