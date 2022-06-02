@@ -83,7 +83,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
         await PrepareTransMessagesAsync(eventBag, cancellationToken);
 
-        await InsertTransMessagesBarriersAsync(eventBag);
+        await InsertTransMessagesBarriersAsync(eventBag, cancellationToken);
     }
 
     public virtual async Task SubmitAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default)
@@ -141,22 +141,12 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         foreach (var model in eventBag.TransMessages.Values)
         {
             var message = (model.DtmMessage as MsgGrpc)!;
-
-            var dbContextType = $"{model.DbConnectionLookupInfo.DbContextType.FullName}, {model.DbConnectionLookupInfo.DbContextType.Assembly.GetName().Name}";
-
-            message.SetBranchHeaders(new Dictionary<string, string>
-            {
-                {DtmRequestHeaderNames.ActionApiToken, AbpDtmGrpcOptions.ActionApiToken},
-                {DtmRequestHeaderNames.DbContextType, dbContextType},
-                {DtmRequestHeaderNames.TenantId, model.DbConnectionLookupInfo.TenantId.ToString()},
-                {DtmRequestHeaderNames.HashedConnectionString, model.DbConnectionLookupInfo.HashedConnectionString},
-            });
-
             await message.Prepare(AbpDtmGrpcOptions.GetQueryPreparedAddress(), cancellationToken);
         }
     }
 
-    protected virtual async Task InsertTransMessagesBarriersAsync(DtmOutboxEventBag eventBag)
+    protected virtual async Task InsertTransMessagesBarriersAsync(DtmOutboxEventBag eventBag,
+        CancellationToken cancellationToken = default)
     {
         foreach (var model in eventBag.TransMessages.Values)
         {
@@ -168,7 +158,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
 
             foreach (var barrierManager in barrierManagers)
             {
-                if (await barrierManager.TryInvokeEnsureInsertBarrierAsync(databaseApi, model.Gid))
+                if (await barrierManager.TryInvokeEnsureInsertBarrierAsync(databaseApi, model.Gid, cancellationToken))
                 {
                     inserted = true;
                     break;

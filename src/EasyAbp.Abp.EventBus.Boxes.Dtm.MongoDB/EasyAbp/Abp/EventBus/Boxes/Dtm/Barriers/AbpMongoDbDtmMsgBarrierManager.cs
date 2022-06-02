@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using DtmCommon;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
@@ -31,7 +32,8 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         BarrierCollectionInitializer = barrierCollectionInitializer;
     }
 
-    public override async Task EnsureInsertBarrierAsync(IAbpMongoDbContext dbContext, string gid)
+    public override async Task EnsureInsertBarrierAsync(IAbpMongoDbContext dbContext, string gid,
+        CancellationToken cancellationToken = default)
     {
         if (dbContext.SessionHandle is null)
         {
@@ -40,7 +42,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
         try
         {
-            await InsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG);
+            await InsertBarrierAsync(dbContext, gid, Constant.TYPE_MSG, cancellationToken);
         }
         catch (Exception e)
         {
@@ -54,11 +56,12 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         }
     }
 
-    public override async Task<bool> TryInsertBarrierAsRollbackAsync(IAbpMongoDbContext dbContext, string gid)
+    public override async Task<bool> TryInsertBarrierAsRollbackAsync(IAbpMongoDbContext dbContext, string gid,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            await InsertBarrierAsync(dbContext, gid, Constant.Barrier.MSG_BARRIER_REASON);
+            await InsertBarrierAsync(dbContext, gid, Constant.Barrier.MSG_BARRIER_REASON, cancellationToken);
         }
         catch (Exception e)
         {
@@ -76,10 +79,13 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
             var filter = BuildFindFilters(gid, Constant.Barrier.MSG_BRANCHID, Constant.TYPE_MSG,
                 Constant.Barrier.MSG_BARRIER_ID);
+
+            var cursor = dbContext.SessionHandle is null
+                ? await mongoCollection.FindAsync<DtmBarrierDocument>(filter, cancellationToken: cancellationToken)
+                : await mongoCollection.FindAsync<DtmBarrierDocument>(dbContext.SessionHandle, filter,
+                    cancellationToken: cancellationToken);
             
-            var cursor = await mongoCollection.FindAsync<DtmBarrierDocument>(filter);
-            
-            var res = await cursor.ToListAsync();
+            var res = await cursor.ToListAsync(cancellationToken: cancellationToken);
 
             if (res is { Count: > 0 } && res[0].Reason.Equals(Constant.Barrier.MSG_BARRIER_REASON))
             {
@@ -107,7 +113,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     }
 
     protected virtual async Task InsertBarrierAsync(IAbpMongoDbContext dbContext, string gid,
-        string reason)
+        string reason, CancellationToken cancellationToken = default)
     {
         var mongoCollection = GetMongoCollection(dbContext);
 
@@ -115,7 +121,7 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
 
         try
         {
-            await mongoCollection.InsertOneAsync(new DtmBarrierDocument
+            var document = new DtmBarrierDocument
             {
                 TransType = Constant.TYPE_MSG,
                 GId = gid,
@@ -123,7 +129,21 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
                 Op = Constant.TYPE_MSG,
                 BarrierId = Constant.Barrier.MSG_BARRIER_ID,
                 Reason = reason
-            });
+            };
+
+            if (dbContext.SessionHandle is null)
+            {
+                await mongoCollection.InsertOneAsync(
+                    document,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await mongoCollection.InsertOneAsync(
+                    dbContext.SessionHandle,
+                    document,
+                    cancellationToken: cancellationToken);
+            }
         }
         catch (Exception e)
         {
@@ -136,7 +156,8 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
         }
     }
 
-    public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid)
+    public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid,
+        CancellationToken cancellationToken)
     {
         if (!IsValidDatabaseApi<MongoDbDatabaseApi>(databaseApi))
         {
