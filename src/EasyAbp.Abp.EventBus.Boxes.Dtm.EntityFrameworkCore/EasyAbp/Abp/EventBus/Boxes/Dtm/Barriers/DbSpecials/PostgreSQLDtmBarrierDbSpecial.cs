@@ -36,9 +36,8 @@ create schema if not exists ""{schemaName}"";
         }
         
         sql += $@"
-CREATE SEQUENCE if not EXISTS ""{sequenceFullName}"";
 create table if not exists ""{tableFullName}""(
-  id bigint NOT NULL DEFAULT NEXTVAL (""{sequenceFullName}""),
+  id bigserial NOT NULL,
   trans_type varchar(45) default '',
   gid varchar(128) default '',
   branch_id varchar(128) default '',
