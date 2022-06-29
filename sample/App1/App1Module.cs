@@ -10,8 +10,8 @@ using Volo.Abp.AspNetCore.Authentication.JwtBearer;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -62,7 +62,7 @@ namespace App1;
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpAspNetCoreMvcUiBasicThemeModule),
+    typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
 
     // Account module packages
     typeof(AbpAccountApplicationModule),
@@ -185,7 +185,7 @@ public class App1Module : AbpModule
         Configure<AbpBundlingOptions>(options =>
         {
             options.StyleBundles.Configure(
-                BasicThemeBundles.Styles.Global,
+                LeptonXLiteThemeBundles.Styles.Global,
                 bundle =>
                 {
                     bundle.AddFiles("/global-styles.css");
