@@ -50,7 +50,7 @@ public class FakeDtmMessageManager : IDtmMessageManager, ITransientDependency
         model.EventInfos.Add(eventInfo);
     }
 
-    public async Task InsertBarriersAndPrepareAsync(DtmOutboxEventBag eventBag,
+    public async Task PrepareAndInsertBarriersAsync(DtmOutboxEventBag eventBag,
         CancellationToken cancellationToken = default)
     {
         // await AddEventsPublishingActionAsync(eventBag);
