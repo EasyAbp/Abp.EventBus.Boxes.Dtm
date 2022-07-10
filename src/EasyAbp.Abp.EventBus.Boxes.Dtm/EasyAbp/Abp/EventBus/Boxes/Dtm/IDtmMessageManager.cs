@@ -11,7 +11,7 @@ public interface IDtmMessageManager
     Task AddEventAsync(DtmOutboxEventBag eventBag, object dbContext, [NotNull] string connectionString,
         [CanBeNull] object transObj, OutgoingEventInfo eventInfo);
 
-    Task InsertBarriersAndPrepareAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default);
+    Task PrepareAndInsertBarriersAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default);
 
     Task SubmitAsync(DtmOutboxEventBag eventBag, CancellationToken cancellationToken = default);
 }

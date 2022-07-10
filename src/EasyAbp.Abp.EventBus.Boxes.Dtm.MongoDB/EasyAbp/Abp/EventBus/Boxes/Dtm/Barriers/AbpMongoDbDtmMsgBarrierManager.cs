@@ -157,14 +157,14 @@ public class AbpMongoDbDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IAbpMongo
     }
 
     public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (!IsValidDatabaseApi<MongoDbDatabaseApi>(databaseApi))
         {
             return false;
         }
 
-        await EnsureInsertBarrierAsync(((MongoDbDatabaseApi)databaseApi).DbContext, gid);
+        await EnsureInsertBarrierAsync(((MongoDbDatabaseApi)databaseApi).DbContext, gid, cancellationToken);
 
         return true;
     }

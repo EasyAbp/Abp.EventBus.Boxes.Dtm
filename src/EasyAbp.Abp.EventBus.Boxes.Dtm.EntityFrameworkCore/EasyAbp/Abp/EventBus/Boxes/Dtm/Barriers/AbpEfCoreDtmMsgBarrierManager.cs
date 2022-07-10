@@ -120,14 +120,14 @@ public class AbpEfCoreDtmMsgBarrierManager : DtmMsgBarrierManagerBase<IEfCoreDbC
     }
 
     public override async Task<bool> TryInvokeEnsureInsertBarrierAsync(IDatabaseApi databaseApi, string gid,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (!IsValidDatabaseApi<EfCoreDatabaseApi>(databaseApi))
         {
             return false;
         }
 
-        await EnsureInsertBarrierAsync(((EfCoreDatabaseApi)databaseApi).DbContext, gid);
+        await EnsureInsertBarrierAsync(((EfCoreDatabaseApi)databaseApi).DbContext, gid, cancellationToken);
 
         return true;
     }

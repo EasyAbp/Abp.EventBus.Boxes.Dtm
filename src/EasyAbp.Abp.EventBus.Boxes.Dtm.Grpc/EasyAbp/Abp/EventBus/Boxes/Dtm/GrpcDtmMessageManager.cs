@@ -71,7 +71,7 @@ public class GrpcDtmMessageManager : IDtmMessageManager, ITransientDependency
         model.EventInfos.Add(eventInfo);
     }
 
-    public virtual async Task InsertBarriersAndPrepareAsync(DtmOutboxEventBag eventBag,
+    public virtual async Task PrepareAndInsertBarriersAsync(DtmOutboxEventBag eventBag,
         CancellationToken cancellationToken = default)
     {
         await AddEventsPublishingActionAsync(eventBag);
