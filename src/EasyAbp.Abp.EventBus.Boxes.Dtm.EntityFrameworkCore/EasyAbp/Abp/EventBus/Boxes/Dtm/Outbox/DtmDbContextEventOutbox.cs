@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -42,16 +43,16 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
     public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount,
         CancellationToken cancellationToken = new())
     {
-        throw new NotSupportedException();
+        return Task.FromResult(new List<OutgoingEventInfo>());
     }
 
     public virtual Task DeleteAsync(Guid id)
     {
-        throw new NotSupportedException();
+        return Task.CompletedTask;
     }
 
     public virtual Task DeleteManyAsync(IEnumerable<Guid> ids)
     {
-        throw new NotSupportedException();
+        return Task.CompletedTask;
     }
 }

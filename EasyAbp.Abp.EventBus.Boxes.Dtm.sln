@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.EventBus.Boxes.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc", "src\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc\EasyAbp.Abp.EventBus.Boxes.Dtm.Grpc.csproj", "{A94FB25B-581E-4155-A863-A0CB0D6FD25F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.EventBus.Boxes.Dtm.Http", "src\EasyAbp.Abp.EventBus.Boxes.Dtm.Http\EasyAbp.Abp.EventBus.Boxes.Dtm.Http.csproj", "{69470D20-8CCF-4EC4-87DA-151CC9CC5AC1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{A94FB25B-581E-4155-A863-A0CB0D6FD25F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A94FB25B-581E-4155-A863-A0CB0D6FD25F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A94FB25B-581E-4155-A863-A0CB0D6FD25F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69470D20-8CCF-4EC4-87DA-151CC9CC5AC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69470D20-8CCF-4EC4-87DA-151CC9CC5AC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69470D20-8CCF-4EC4-87DA-151CC9CC5AC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69470D20-8CCF-4EC4-87DA-151CC9CC5AC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{D0AD9179-125C-40B2-A8EE-CD4C1EE24BB6} = {CCD2960C-23CC-4AB4-B84D-60C7AAA52F4D}
 		{BE39FD00-745B-4049-8161-FC129817CBE4} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
 		{A94FB25B-581E-4155-A863-A0CB0D6FD25F} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
+		{69470D20-8CCF-4EC4-87DA-151CC9CC5AC1} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4324B3B4-B60B-4E3C-91D8-59576B4E26DD}

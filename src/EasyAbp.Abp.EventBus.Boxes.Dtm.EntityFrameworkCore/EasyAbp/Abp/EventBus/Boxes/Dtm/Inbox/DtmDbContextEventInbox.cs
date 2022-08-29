@@ -47,12 +47,12 @@ public class DtmDbContextEventInbox<TDbContext> : IDtmDbContextEventInbox<TDbCon
     public virtual Task<List<IncomingEventInfo>> GetWaitingEventsAsync(int maxCount,
         CancellationToken cancellationToken = new())
     {
-        throw new NotSupportedException();
+        return Task.FromResult(new List<IncomingEventInfo>());
     }
 
     public virtual Task MarkAsProcessedAsync(Guid id)
     {
-        throw new NotSupportedException();
+        return Task.CompletedTask;
     }
 
     [UnitOfWork(false)]
@@ -65,6 +65,6 @@ public class DtmDbContextEventInbox<TDbContext> : IDtmDbContextEventInbox<TDbCon
 
     public virtual Task DeleteOldEventsAsync()
     {
-        throw new NotSupportedException();
+        return Task.CompletedTask;
     }
 }
