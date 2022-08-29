@@ -20,7 +20,7 @@ using Volo.Abp.Uow;
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 
 /// <summary>
-/// http调用
+/// http 
 /// </summary>
 public class HttpDtmMessageManager : IDtmMessageManager, ITransientDependency
 {
