@@ -43,16 +43,16 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
     public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount,
         CancellationToken cancellationToken = new())
     {
-        return Task.FromResult(new List<OutgoingEventInfo>());
+        throw new NotSupportedException();
     }
 
     public virtual Task DeleteAsync(Guid id)
     {
-        return Task.CompletedTask;
+        throw new NotSupportedException();
     }
 
     public virtual Task DeleteManyAsync(IEnumerable<Guid> ids)
     {
-        return Task.CompletedTask;
+        throw new NotSupportedException();
     }
 }
