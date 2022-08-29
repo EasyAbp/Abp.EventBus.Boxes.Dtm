@@ -48,7 +48,7 @@ public class AppHttpSampleModule : AbpModule
             options.UseNpgsql(context.Services.GetConfiguration().GetConnectionString("DefaultConnection"));
         });
         context.Services.AddAbpDbContext<TestDbContext>(options => { options.AddDefaultRepositories(true); });
-        
+        context.Services.AddDtmBoxes();
         context.Services.AddAbpDtmHttp(options =>
         {
             options.ActionApiToken = configuration["DTM:ActionApiToken"];//
