@@ -257,6 +257,7 @@ host/EasyAbp.Abp.EventBus.Boxes.Dtm.HttpApi.Host/Logs/logs.txt
 host/EasyAbp.Abp.EventBus.Boxes.Dtm.Web.Host/Logs/logs.txt
 host/EasyAbp.Abp.EventBus.Boxes.Dtm.Web.Unified/Logs/logs.txt
 host/EasyAbp.Abp.EventBus.Boxes.Dtm.Blazor.Server.Host/Logs/logs.txt
+sample/**/Logs/logs.txt
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*
