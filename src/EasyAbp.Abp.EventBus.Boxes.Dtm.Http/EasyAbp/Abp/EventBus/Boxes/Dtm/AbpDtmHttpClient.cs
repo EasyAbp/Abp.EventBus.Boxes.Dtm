@@ -43,7 +43,7 @@ public class AbpDtmHttpClient : IDtmClient, ISingletonDependency
     public async Task TransCallDtm(TransBase tb, object body, string operation, CancellationToken cancellationToken)
     {
         string requestUri ="/api/dtmsvr/" + operation;
-        using var response = await _httpClientFactory.CreateClient("dtmClient").PostAsJsonAsync(requestUri, tb, cancellationToken).ConfigureAwait(false);
+        using var response = await _httpClientFactory.CreateClient("dtmClient").PostAsJsonAsync(requestUri, tb, cancellationToken);
         Utils.CheckStatus(response.StatusCode, await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false));
     }
 
