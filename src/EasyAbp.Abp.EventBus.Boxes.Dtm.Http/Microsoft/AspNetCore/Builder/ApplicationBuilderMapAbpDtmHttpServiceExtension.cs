@@ -5,7 +5,7 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static class ApplicationBuilderMapAbpDtmHttpServiceExtension
 {
-    public static void MapAbpDtmHttpService(this IApplicationBuilder app)
+    public static void UseAbpDtmEventBoxesHttpServices(this IApplicationBuilder app)
     {
         app.UseDtmQueryPrepared();
         app.UseDtmPublishEvents();
