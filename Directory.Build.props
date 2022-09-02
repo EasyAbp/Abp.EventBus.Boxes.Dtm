@@ -5,6 +5,7 @@
     <GrpcVersion>2.46.0</GrpcVersion>
     <GrpcToolsVersion>2.46.1</GrpcToolsVersion>
     <DtmgrpcVersion>1.1.2</DtmgrpcVersion>
+    <DtmcliVersion>1.1.2</DtmcliVersion>
     <DtmMongoBarrierVersion>1.1.2</DtmMongoBarrierVersion>
 
   </PropertyGroup>
