@@ -13,7 +13,7 @@ public class ActionApiTokenChecker: IActionApiTokenChecker, ISingletonDependency
     {
         _abpDtmHttpOptions = abpDtmHttpOptions;
     }
-    public Task<bool> IsCorrectAsync(string token)
+    public virtual Task<bool> IsCorrectAsync(string token)
     {
         return Task.FromResult(_abpDtmHttpOptions.Value.ActionApiToken == token);
     }

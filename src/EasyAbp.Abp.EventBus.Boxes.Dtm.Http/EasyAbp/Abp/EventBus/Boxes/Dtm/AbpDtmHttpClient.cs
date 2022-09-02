@@ -40,7 +40,7 @@ public class AbpDtmHttpClient : IDtmClient, ISingletonDependency
         throw new NotImplementedException();
     }
 
-    public async Task TransCallDtm(TransBase tb, object body, string operation, CancellationToken cancellationToken)
+    public virtual async Task TransCallDtm(TransBase tb, object body, string operation, CancellationToken cancellationToken)
     {
         string requestUri ="/api/dtmsvr/" + operation;
         using var response = await _httpClientFactory.CreateClient("dtmClient").PostAsJsonAsync(requestUri, tb, cancellationToken);
