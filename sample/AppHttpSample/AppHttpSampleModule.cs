@@ -84,6 +84,6 @@ public class AppHttpSampleModule : AbpModule
             }));
         }));
         //register dtm Middleware
-        app.MapAbpDtmHttpService();
+        app.UseAbpDtmEventBoxesHttpServices();
     }
 }
