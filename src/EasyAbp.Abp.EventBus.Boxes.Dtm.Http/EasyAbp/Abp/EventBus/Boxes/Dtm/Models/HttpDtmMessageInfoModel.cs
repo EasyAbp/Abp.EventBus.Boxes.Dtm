@@ -20,15 +20,12 @@ public class HttpDtmMessageInfoModel : IDtmMessageInfoModel
 
     public List<OutgoingEventInfo> EventInfos { get; set; } = new();
 
-    private readonly IDtmMessageBuilder _dtmMessageBuilder;
-
     public HttpDtmMessageInfoModel(string gid, object dtmMessage,
-        [NotNull] DbConnectionLookupInfoModel dbConnectionLookupInfo, IDtmMessageBuilder dtmMessageBuilder)
+        [NotNull] DbConnectionLookupInfoModel dbConnectionLookupInfo)
     {
         Gid = gid;
         DtmMessage = dtmMessage;
         DbConnectionLookupInfo = dbConnectionLookupInfo;
-        _dtmMessageBuilder = dtmMessageBuilder;
     }
 
     internal async Task AddEventsPublishingActionAsync(AbpDtmHttpOptions abpDtmEventBoxesOptions,
@@ -58,11 +55,6 @@ public class HttpDtmMessageInfoModel : IDtmMessageInfoModel
             {DtmRequestHeaderNames.TenantId, DbConnectionLookupInfo.TenantId.ToString()},
             {DtmRequestHeaderNames.HashedConnectionString, DbConnectionLookupInfo.HashedConnectionString},
         };
-        if (_dtmMessageBuilder != null)
-        {
-            await _dtmMessageBuilder.BuildMessageHeaders(headers);
-        }
-
         message.SetBranchHeaders(headers);
         EventsPublishingActionAdded = true;
     }

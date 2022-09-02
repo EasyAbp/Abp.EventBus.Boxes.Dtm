@@ -117,7 +117,7 @@ public class HttpDtmMessageManager : IDtmMessageManager, ITransientDependency
         var gid = GidProvider.Create();
 
         return new HttpDtmMessageInfoModel(gid, DtmTransFactory.NewMsg(gid),
-            new DbConnectionLookupInfoModel(dbContextType, CurrentTenant.Id, hashedConnectionString),ServiceProvider.GetService<IDtmMessageBuilder>());
+            new DbConnectionLookupInfoModel(dbContextType, CurrentTenant.Id, hashedConnectionString));
     }
 
     protected virtual async Task AddEventsPublishingActionAsync(DtmOutboxEventBag eventBag)
