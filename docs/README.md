@@ -3,7 +3,7 @@
 [![ABP version](https://img.shields.io/badge/dynamic/xml?style=flat-square&color=yellow&label=abp&query=%2F%2FProject%2FPropertyGroup%2FAbpVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2FEasyAbp%2FAbp.EventBus.Boxes.Dtm%2Fmain%2FDirectory.Build.props)](https://abp.io)
 [![NuGet](https://img.shields.io/nuget/v/EasyAbp.Abp.EventBus.Boxes.Dtm.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.EventBus.Boxes.Dtm)
 [![NuGet Download](https://img.shields.io/nuget/dt/EasyAbp.Abp.EventBus.Boxes.Dtm.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.EventBus.Boxes.Dtm)
-[![Discord online](https://badgen.net/discord/online-members/S6QaezrCRq?label=Discord)](https://discord.gg/S6QaezrCRq)
+[![Discord online](https://badgen.net/discord/online-members/xyg8TrRa27?label=Discord)](https://discord.gg/xyg8TrRa27)
 [![GitHub stars](https://img.shields.io/github/stars/EasyAbp/Abp.EventBus.Boxes.Dtm?style=social)](https://www.github.com/EasyAbp/Abp.EventBus.Boxes.Dtm)
 
 The [DTM](https://github.com/dtm-labs/dtm) implementation module of ABP distributed event boxes.
@@ -16,16 +16,16 @@ You should see the [DTM docs](https://en.dtm.pub/guide/start.html), which help t
 
 ## Differences From the ABP's Default Event Boxes
 
-|                                                     | DTM 2-phase Message Boxes |                 ABP 5.0+ Default Boxes                 |
-| :-------------------------------------------------: | :-----------------------: | :----------------------------------------------------: |
-|                     Speediness                      |    :heavy_check_mark:     |                          :x:                           |
-|                 Less data transfer                  |            :x:            |                   :heavy_check_mark:                   |
-|   Be guaranteed to publish<br>(transactional UOW)   |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
-| Be guaranteed to publish<br>(non-transactional UOW) |            :x:            | :heavy_check_mark:<br>(consumers idempotency required) |
-|          No consumers idempotency required          |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
-|            Multi-tenant-database support            |    :heavy_check_mark:     |                          :x:                           |
-|        No additional external infrastructure        |            :x:            |                   :heavy_check_mark:                   |
-|                 Dashboard and Alarm                 |    :heavy_check_mark:     |                          :x:                           |
+|                                                                            | DTM 2-phase Message Boxes |                 ABP 5.0+ Default Boxes                 |
+|:--------------------------------------------------------------------------:| :-----------------------: | :----------------------------------------------------: |
+|                                 Speediness                                 |    :heavy_check_mark:     |                          :x:                           |
+|                             Less data transfer                             |            :x:            |                   :heavy_check_mark:                   |
+|              Be guaranteed to publish<br>(transactional UOW)               |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
+|            Be guaranteed to publish<br>(non-transactional UOW)             |            :x:            | :heavy_check_mark:<br>(consumers idempotency required) |
+|           Avoid duplicate handling<br>(with only DB operations)            |    :heavy_check_mark:     |                   :heavy_check_mark:                   |
+|                       Multi-tenant-database support                        |    :heavy_check_mark:     |                          :x:                           |
+|                   No additional external infrastructure                    |            :x:            |                   :heavy_check_mark:                   |
+|                            Dashboard and Alarm                             |    :heavy_check_mark:     |                          :x:                           |
 
 ## How Does the DTM Outbox Work?
 

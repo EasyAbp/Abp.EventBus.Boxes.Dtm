@@ -90,11 +90,6 @@ public class AbpDtmgRPCClient : IDtmgRPCClient, ISingletonDependency
             transOptions.BranchHeaders.Add(transBase.BranchHeaders);
         }
 
-        if (transBase.PassthroughHeaders != null)
-        {
-            transOptions.PassthroughHeaders.Add(transBase.PassthroughHeaders);
-        }
-
         var dtmRequest = new dtmgpb.DtmRequest
         {
             Gid = transBase.Gid,

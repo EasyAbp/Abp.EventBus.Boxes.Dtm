@@ -58,7 +58,7 @@ public class DtmGrpcService : Dtm.DtmGrpcService.DtmGrpcServiceBase
                   throw new AbpException("Cannot get dtm-gid from the gRPC request headers.");
 
         var tenantIdString = context.RequestHeaders.GetValue(DtmRequestHeaderNames.TenantId);
-        var tenantId = tenantIdString.IsNullOrWhiteSpace() ? (Guid?)null : Guid.Parse(tenantIdString);
+        var tenantId = tenantIdString.IsNullOrWhiteSpace() ? (Guid?)null : Guid.Parse(tenantIdString!);
 
         using var unitOfWork = UnitOfWorkManager.Begin(true);
         using var changeTenant = CurrentTenant.Change(tenantId);
