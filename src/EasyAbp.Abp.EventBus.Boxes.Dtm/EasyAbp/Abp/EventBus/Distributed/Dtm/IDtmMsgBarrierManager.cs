@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Volo.Abp.Uow;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public interface IDtmMsgBarrierManager<in TDbContextInterface> : IDtmMsgBarrierManager where TDbContextInterface : class
 {

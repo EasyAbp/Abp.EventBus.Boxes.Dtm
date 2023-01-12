@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;

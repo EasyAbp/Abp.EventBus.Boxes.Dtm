@@ -1,6 +1,5 @@
-﻿using System;
-using DtmCommon;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+﻿using DtmCommon;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Barriers.DbSpecials;
 

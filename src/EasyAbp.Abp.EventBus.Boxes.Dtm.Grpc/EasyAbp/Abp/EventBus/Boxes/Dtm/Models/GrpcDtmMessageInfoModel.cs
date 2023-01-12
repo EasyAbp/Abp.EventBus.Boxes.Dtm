@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Dtmgrpc;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 using JetBrains.Annotations;
 using Volo.Abp;
 using Volo.Abp.EventBus.Distributed;

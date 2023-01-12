@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Volo.Abp.EventBus.Distributed;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public interface IEventInfosSerializer
 {

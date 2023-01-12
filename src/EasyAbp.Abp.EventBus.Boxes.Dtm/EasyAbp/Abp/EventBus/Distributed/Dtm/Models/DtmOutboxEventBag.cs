@@ -2,7 +2,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 
 public class DtmOutboxEventBag
 {

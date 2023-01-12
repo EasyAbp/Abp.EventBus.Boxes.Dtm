@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EventBus.Boxes;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Uow;
 

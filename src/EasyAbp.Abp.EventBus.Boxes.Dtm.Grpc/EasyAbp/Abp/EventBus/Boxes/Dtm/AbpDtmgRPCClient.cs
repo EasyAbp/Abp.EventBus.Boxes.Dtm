@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DtmCommon;
 using Dtmgrpc;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;

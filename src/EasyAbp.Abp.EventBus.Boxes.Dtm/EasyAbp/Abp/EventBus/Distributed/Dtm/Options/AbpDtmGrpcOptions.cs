@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 
 public class AbpDtmGrpcOptions
 {

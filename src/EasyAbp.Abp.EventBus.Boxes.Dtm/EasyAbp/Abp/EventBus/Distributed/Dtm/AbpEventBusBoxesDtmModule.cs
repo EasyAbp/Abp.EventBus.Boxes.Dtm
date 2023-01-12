@@ -1,7 +1,7 @@
 ﻿using Volo.Abp.EventBus;
 using Volo.Abp.Modularity;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 [DependsOn(
     typeof(AbpEventBusModule)

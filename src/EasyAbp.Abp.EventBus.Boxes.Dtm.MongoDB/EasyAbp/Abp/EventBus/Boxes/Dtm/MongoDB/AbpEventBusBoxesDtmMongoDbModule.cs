@@ -1,5 +1,6 @@
 ﻿using EasyAbp.Abp.EventBus.Boxes.Dtm.Inbox;
 using EasyAbp.Abp.EventBus.Boxes.Dtm.Outbox;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
 using Volo.Abp.MongoDB;

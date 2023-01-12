@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public class Md5ConnectionStringHasher : IConnectionStringHasher, ITransientDependency
 {

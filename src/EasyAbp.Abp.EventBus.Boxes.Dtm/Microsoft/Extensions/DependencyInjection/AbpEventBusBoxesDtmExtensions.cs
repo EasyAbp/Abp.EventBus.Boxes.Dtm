@@ -1,8 +1,8 @@
 ﻿using System;
-using EasyAbp.Abp.EventBus.Boxes.Dtm;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Volo.Abp.EventBus.Boxes;
+using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Uow;
 
 namespace Microsoft.Extensions.DependencyInjection;

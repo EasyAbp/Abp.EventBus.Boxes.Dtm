@@ -1,7 +1,7 @@
 ﻿using Volo.Abp.DependencyInjection;
 using Volo.Abp.Guids;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public class DtmMsgGidProvider : IDtmMsgGidProvider, ITransientDependency
 {

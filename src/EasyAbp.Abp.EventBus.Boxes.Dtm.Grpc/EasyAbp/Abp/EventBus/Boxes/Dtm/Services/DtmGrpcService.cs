@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DtmCommon;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
-using Volo.Abp.EventBus.Boxes;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.Uow;

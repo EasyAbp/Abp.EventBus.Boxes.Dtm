@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;

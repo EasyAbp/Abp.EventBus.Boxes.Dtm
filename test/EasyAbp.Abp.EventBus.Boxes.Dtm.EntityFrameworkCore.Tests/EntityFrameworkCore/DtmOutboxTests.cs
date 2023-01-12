@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Volo.Abp;

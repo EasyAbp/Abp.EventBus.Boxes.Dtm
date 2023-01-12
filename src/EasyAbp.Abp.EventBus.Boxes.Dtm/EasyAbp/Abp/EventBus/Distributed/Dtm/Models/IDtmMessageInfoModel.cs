@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Volo.Abp.EventBus.Distributed;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 
 public interface IDtmMessageInfoModel
 {

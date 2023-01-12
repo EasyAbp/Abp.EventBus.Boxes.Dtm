@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 using JetBrains.Annotations;
 using Volo.Abp.EventBus.Distributed;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public interface IDtmMessageManager
 {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public interface IActionApiTokenChecker
 {

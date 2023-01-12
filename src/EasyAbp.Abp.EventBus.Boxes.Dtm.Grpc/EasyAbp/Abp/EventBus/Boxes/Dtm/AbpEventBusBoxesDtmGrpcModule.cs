@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Modularity;
+﻿using EasyAbp.Abp.EventBus.Distributed.Dtm;
+using Volo.Abp.Modularity;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
 

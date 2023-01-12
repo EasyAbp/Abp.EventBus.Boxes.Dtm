@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 
 public class DbContextProviderInfo
 {

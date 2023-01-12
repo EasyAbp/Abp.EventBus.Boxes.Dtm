@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Models;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 using Microsoft.Extensions.Options;
 using Volo.Abp.Uow;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public class DtmUnitOfWork : UnitOfWork
 {

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Uow;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public abstract class DtmMsgBarrierManagerBase<TDbContextInterface> : IDtmMsgBarrierManager<TDbContextInterface>, IDtmMsgBarrierManager
     where TDbContextInterface : class

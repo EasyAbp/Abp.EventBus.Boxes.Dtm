@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using DtmCommon;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;

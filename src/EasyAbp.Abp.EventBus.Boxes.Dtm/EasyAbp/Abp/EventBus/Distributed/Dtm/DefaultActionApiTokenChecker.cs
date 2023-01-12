@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 
-namespace EasyAbp.Abp.EventBus.Boxes.Dtm;
+namespace EasyAbp.Abp.EventBus.Distributed.Dtm;
 
 public class DefaultActionApiTokenChecker : IActionApiTokenChecker, ITransientDependency
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using Dtmgrpc;
-using EasyAbp.Abp.EventBus.Boxes.Dtm.Options;
+using EasyAbp.Abp.EventBus.Distributed.Dtm.Options;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using EasyAbp.Abp.EventBus.Distributed.Dtm;
 using Microsoft.Extensions.Options;
 using Volo.Abp;
 using Volo.Abp.DependencyInjection;
