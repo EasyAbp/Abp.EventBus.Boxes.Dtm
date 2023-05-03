@@ -8,6 +8,7 @@ using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Sqlite;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Modularity;
+using Volo.Abp.Uow;
 
 namespace EasyAbp.Abp.EventBus.Boxes.Dtm.EntityFrameworkCore;
 
@@ -20,6 +21,7 @@ public class AbpEventBusBoxesDtmEntityFrameworkCoreTestModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        context.Services.AddAlwaysDisableUnitOfWorkTransaction();
         var sqliteConnection = CreateDatabaseAndGetConnection();
 
         Configure<AbpDbContextOptions>(options =>
