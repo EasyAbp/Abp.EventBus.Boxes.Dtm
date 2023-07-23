@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus;
 using Volo.Abp.EventBus.Distributed;
+using Volo.Abp.EventBus.Local;
 using Volo.Abp.Guids;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.Timing;
@@ -17,9 +18,9 @@ public class FakeDistributedEventBus : DistributedEventBusBase, ITransientDepend
 {
     public FakeDistributedEventBus(IServiceScopeFactory serviceScopeFactory, ICurrentTenant currentTenant,
         IUnitOfWorkManager unitOfWorkManager, IOptions<AbpDistributedEventBusOptions> abpDistributedEventBusOptions,
-        IGuidGenerator guidGenerator, IClock clock, IEventHandlerInvoker eventHandlerInvoker) : base(
-        serviceScopeFactory, currentTenant, unitOfWorkManager, abpDistributedEventBusOptions, guidGenerator, clock,
-        eventHandlerInvoker)
+        IGuidGenerator guidGenerator, IClock clock, IEventHandlerInvoker eventHandlerInvoker,
+        ILocalEventBus localEventBus) : base(serviceScopeFactory, currentTenant, unitOfWorkManager,
+        abpDistributedEventBusOptions, guidGenerator, clock, eventHandlerInvoker, localEventBus)
     {
     }
 
@@ -68,7 +69,8 @@ public class FakeDistributedEventBus : DistributedEventBusBase, ITransientDepend
         await Task.CompletedTask;
     }
 
-    public override async Task PublishManyFromOutboxAsync(IEnumerable<OutgoingEventInfo> outgoingEvents, OutboxConfig outboxConfig)
+    public override async Task PublishManyFromOutboxAsync(IEnumerable<OutgoingEventInfo> outgoingEvents,
+        OutboxConfig outboxConfig)
     {
         await Task.CompletedTask;
     }

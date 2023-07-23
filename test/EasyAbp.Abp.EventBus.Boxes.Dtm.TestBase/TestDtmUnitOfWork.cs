@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.EventBus.Distributed.Dtm;
 using Microsoft.Extensions.Options;
@@ -19,13 +20,13 @@ public class TestDtmUnitOfWork : DtmUnitOfWork
     {
     }
 
-    protected override async Task CommitTransactionsAsync()
+    protected override async Task CommitTransactionsAsync(CancellationToken cancellationToken)
     {
         if (!EventBag.HasAnyEvent())
         {
             foreach (var transaction in GetAllActiveTransactionApis())
             {
-                await transaction.CommitAsync();
+                await transaction.CommitAsync(cancellationToken);
             }
             
             return;
@@ -33,7 +34,7 @@ public class TestDtmUnitOfWork : DtmUnitOfWork
         
         OnCompleted(async () => await DtmMessageManager.SubmitAsync(EventBag));
 
-        await DtmMessageManager.PrepareAndInsertBarriersAsync(EventBag);
+        await DtmMessageManager.PrepareAndInsertBarriersAsync(EventBag, cancellationToken);
 
         if (ThrowIfCommit)
         {
@@ -42,7 +43,7 @@ public class TestDtmUnitOfWork : DtmUnitOfWork
         
         foreach (var transaction in GetAllActiveTransactionApis())
         {
-            await transaction.CommitAsync();
+            await transaction.CommitAsync(cancellationToken);
         }
     }
 }

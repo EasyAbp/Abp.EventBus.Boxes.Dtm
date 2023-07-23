@@ -14,18 +14,10 @@ public class AbpEventBusBoxesDtmMongoDbTestModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        var stringArray = MongoDbFixture.ConnectionString.Split('?');
-        var connectionString = stringArray[0].EnsureEndsWith('/') +
-                               "Db_" +
-                               Guid.NewGuid().ToString("N") + "/?" + stringArray[1];
-        var connectionString2 = stringArray[0].EnsureEndsWith('/') +
-                               "Db_" +
-                               Guid.NewGuid().ToString("N") + "/?" + stringArray[1];
-
         Configure<AbpDbConnectionOptions>(options =>
         {
-            options.ConnectionStrings["Dtm"] = connectionString;
-            options.ConnectionStrings["Dtm2"] = connectionString2;
+            options.ConnectionStrings["Dtm"] = MongoDbFixture.GetRandomConnectionString();
+            options.ConnectionStrings["Dtm2"] = MongoDbFixture.GetRandomConnectionString();
         });
         
         context.Services.AddMongoDbContext<DtmTestMongoDbContext>(options =>

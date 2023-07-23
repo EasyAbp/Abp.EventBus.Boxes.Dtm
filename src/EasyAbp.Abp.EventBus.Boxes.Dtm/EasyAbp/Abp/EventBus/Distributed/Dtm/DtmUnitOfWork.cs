@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.EventBus.Distributed.Dtm.Models;
 using Microsoft.Extensions.Options;
@@ -21,19 +22,19 @@ public class DtmUnitOfWork : UnitOfWork
         DtmMessageManager = dtmMessageManager;
     }
 
-    protected override async Task CommitTransactionsAsync()
+    protected override async Task CommitTransactionsAsync(CancellationToken cancellationToken)
     {
         if (!EventBag.HasAnyEvent())
         {
-            await base.CommitTransactionsAsync();
+            await base.CommitTransactionsAsync(cancellationToken);
             return;
         }
         
-        OnCompleted(async () => await DtmMessageManager.SubmitAsync(EventBag));
+        OnCompleted(async () => await DtmMessageManager.SubmitAsync(EventBag, cancellationToken));
 
-        await DtmMessageManager.PrepareAndInsertBarriersAsync(EventBag);
+        await DtmMessageManager.PrepareAndInsertBarriersAsync(EventBag, cancellationToken);
 
-        await base.CommitTransactionsAsync();
+        await base.CommitTransactionsAsync(cancellationToken);
     }
 
     public virtual DtmOutboxEventBag GetDtmOutboxEventBag()
