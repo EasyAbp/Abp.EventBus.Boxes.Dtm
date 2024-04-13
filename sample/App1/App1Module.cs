@@ -266,7 +266,7 @@ public class App1Module : AbpModule
 
     private void ConfigureAutoApiControllers()
     {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
+        PreConfigure<AbpAspNetCoreMvcOptions>(options =>
         {
             options.ConventionalControllers.Create(typeof(App1Module).Assembly);
         });
