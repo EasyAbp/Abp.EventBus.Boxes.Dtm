@@ -80,7 +80,7 @@ public class AbpEventBusBoxesDtmEntityFrameworkCoreTestModule : AbpModule
 
     private static SqliteConnection CreateDatabaseAndGetConnection()
     {
-        var connection = new SqliteConnection("Data Source=Context;Mode=Memory;Cache=Shared");
+        var connection = new AbpUnitTestSqliteConnection("Data Source=Context;Mode=Memory;Cache=Shared");
         connection.Open();
 
         new DtmTestDbContext(
@@ -92,7 +92,7 @@ public class AbpEventBusBoxesDtmEntityFrameworkCoreTestModule : AbpModule
 
     private static SqliteConnection CreateDatabaseAndGetConnection2()
     {
-        var connection = new SqliteConnection("Data Source=Context2;Mode=Memory;Cache=Shared");
+        var connection = new AbpUnitTestSqliteConnection("Data Source=Context2;Mode=Memory;Cache=Shared");
         connection.Open();
 
         new DtmTestDbContext2(
