@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.EventBus.Distributed.Dtm;
@@ -41,7 +42,7 @@ public class DtmDbContextEventOutbox<TDbContext> : IDtmDbContextEventOutbox<TDbC
     }
 
     public virtual Task<List<OutgoingEventInfo>> GetWaitingEventsAsync(int maxCount,
-        CancellationToken cancellationToken = new())
+        Expression<Func<IOutgoingEventInfo, bool>> filter = null, CancellationToken cancellationToken = new())
     {
         throw new NotSupportedException();
     }

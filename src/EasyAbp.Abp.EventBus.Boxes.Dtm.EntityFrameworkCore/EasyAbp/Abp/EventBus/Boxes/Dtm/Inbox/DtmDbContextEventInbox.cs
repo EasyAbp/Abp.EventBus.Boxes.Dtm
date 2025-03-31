@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.EventBus.Distributed.Dtm;
@@ -28,11 +29,11 @@ public class DtmDbContextEventInbox<TDbContext> : IDtmDbContextEventInbox<TDbCon
         DbContextProvider = dbContextProvider;
         DtmInboxBarrierManager = dtmInboxBarrierManager;
     }
-    
+
     public virtual async Task EnqueueAsync(IncomingEventInfo incomingEvent)
     {
         using var uow = UnitOfWorkManager.Begin(isTransactional: true, requiresNew: true);
-        
+
         var dbContext = await DbContextProvider.GetDbContextAsync();
 
         await DtmInboxBarrierManager.EnsureInsertBarrierAsync(dbContext, incomingEvent.MessageId);
@@ -45,7 +46,7 @@ public class DtmDbContextEventInbox<TDbContext> : IDtmDbContextEventInbox<TDbCon
     }
 
     public virtual Task<List<IncomingEventInfo>> GetWaitingEventsAsync(int maxCount,
-        CancellationToken cancellationToken = new())
+        Expression<Func<IIncomingEventInfo, bool>> filter = null, CancellationToken cancellationToken = new())
     {
         throw new NotSupportedException();
     }
