@@ -32,7 +32,7 @@ public class TestDtmUnitOfWork : DtmUnitOfWork
             return;
         }
         
-        OnCompleted(async () => await DtmMessageManager.SubmitAsync(EventBag));
+        OnCompleted(async () => await DtmMessageManager.SubmitAsync(EventBag, cancellationToken));
 
         await DtmMessageManager.PrepareAndInsertBarriersAsync(EventBag, cancellationToken);
 

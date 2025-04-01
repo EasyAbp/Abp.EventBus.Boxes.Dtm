@@ -41,8 +41,8 @@ public class AbpEventBusBoxesDtmMongoDbTestModule : AbpModule
             options.Outboxes.Configure("SecondBox", config =>
             {
                 config.UseMongoDbContextWithDtmOutbox<DtmTestMongoDbContext2>();
-                config.Selector = null;
-                // config.Selector = type => type == typeof(Test2Eto);
+                // config.Selector = null;
+                config.Selector = type => type == typeof(Test2Eto);
             });
 
             options.Inboxes.Configure(config =>
