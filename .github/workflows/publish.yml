@@ -6,12 +6,7 @@ on:
       - main
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    services:
-      mongo:
-        image: mongo:5.0
-        ports:
-          - 27017:27017
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: NuGet/setup-nuget@v2
