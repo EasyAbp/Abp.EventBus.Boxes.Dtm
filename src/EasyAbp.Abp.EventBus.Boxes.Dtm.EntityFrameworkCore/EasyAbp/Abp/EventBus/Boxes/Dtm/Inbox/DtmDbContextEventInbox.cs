@@ -56,6 +56,16 @@ public class DtmDbContextEventInbox<TDbContext> : IDtmDbContextEventInbox<TDbCon
         throw new NotSupportedException();
     }
 
+    public virtual Task RetryLaterAsync(Guid id, int retryCount, DateTime? nextRetryTime)
+    {
+        throw new NotSupportedException();
+    }
+
+    public virtual Task MarkAsDiscardAsync(Guid id)
+    {
+        throw new NotSupportedException();
+    }
+
     [UnitOfWork(false)]
     public virtual async Task<bool> ExistsByMessageIdAsync(string messageId)
     {

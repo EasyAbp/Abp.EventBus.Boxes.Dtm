@@ -1,10 +1,10 @@
 <Project>
   <PropertyGroup>
-    <AbpVersion>9.2.1</AbpVersion>
+    <AbpVersion>10.0.1</AbpVersion>
     <GrpcVersion>2.71.0</GrpcVersion>
-    <GrpcToolsVersion>2.71.0</GrpcToolsVersion>
+    <GrpcToolsVersion>2.72.0</GrpcToolsVersion>
     <DtmgrpcVersion>1.4.0</DtmgrpcVersion>
     <DtmMongoBarrierVersion>1.4.0</DtmMongoBarrierVersion>
-    <GoogleProtobufVersion>3.30.2</GoogleProtobufVersion>
+    <GoogleProtobufVersion>3.32.0</GoogleProtobufVersion>
   </PropertyGroup>
 </Project>

@@ -336,8 +336,8 @@ public class App1Module : AbpModule
         }
 
         app.UseCorrelationId();
-        app.MapAbpStaticAssets();
         app.UseRouting();
+        app.MapAbpStaticAssets();
         app.UseAuthentication();
         app.UseJwtTokenMiddleware();
 
