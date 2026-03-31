@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <AbpVersion>10.0.1</AbpVersion>
+    <AbpVersion>10.1.1</AbpVersion>
     <GrpcVersion>2.71.0</GrpcVersion>
     <GrpcToolsVersion>2.72.0</GrpcToolsVersion>
     <DtmgrpcVersion>1.4.0</DtmgrpcVersion>

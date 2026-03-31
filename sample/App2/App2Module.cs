@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
 using App2.Data;
 using App2.Localization;
 using App2.Menus;
