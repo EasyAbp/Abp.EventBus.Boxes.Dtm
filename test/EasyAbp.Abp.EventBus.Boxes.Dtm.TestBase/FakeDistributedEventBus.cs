@@ -51,6 +51,31 @@ public class FakeDistributedEventBus : DistributedEventBusBase, ITransientDepend
         throw new NotSupportedException();
     }
 
+    public override IDisposable Subscribe(string eventName, IEventHandlerFactory handler)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override void Unsubscribe(string eventName, IEventHandler handler)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override void Unsubscribe(string eventName, IEventHandlerFactory factory)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override void UnsubscribeAll(string eventName)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override Task PublishAsync(string eventName, object eventData, bool onUnitOfWorkComplete = true)
+    {
+        throw new NotSupportedException();
+    }
+
     protected override async Task PublishToEventBusAsync(Type eventType, object eventData)
     {
         await Task.CompletedTask;
@@ -62,6 +87,16 @@ public class FakeDistributedEventBus : DistributedEventBusBase, ITransientDepend
     }
 
     protected override IEnumerable<EventTypeWithEventHandlerFactories> GetHandlerFactories(Type eventType)
+    {
+        throw new NotSupportedException();
+    }
+
+    protected override IEnumerable<EventTypeWithEventHandlerFactories> GetDynamicHandlerFactories(string eventName)
+    {
+        throw new NotSupportedException();
+    }
+
+    protected override Type GetEventTypeByEventName(string eventName)
     {
         throw new NotSupportedException();
     }
